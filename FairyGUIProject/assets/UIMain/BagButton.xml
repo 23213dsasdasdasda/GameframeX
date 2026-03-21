@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="325,100" pivot="0.5,0.5" extention="Button">
+  <displayList>
+    <graph id="n0_xws7" name="n0" xy="0,0" size="325,100" alpha="0" type="rect">
+      <relation target="" sidePair="width-width,height-height"/>
+    </graph>
+    <image id="n2_mu49" name="n2" src="o1ao7" fileName="Images/图层 14.png" xy="3,4" size="321,95"/>
+    <text id="n1_xws7" name="title" xy="68,17" size="195,67" font="Alimama DaoLiTi" fontSize="43" color="#ffffff" align="center" vAlign="middle" autoSize="none" bold="true" singleLine="true" text="创建房间">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </text>
+  </displayList>
+  <Button downEffect="scale" downEffectValue="0.8"/>
+</component>

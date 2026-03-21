@@ -1,0 +1,27 @@
+[
+  {
+    "ServerType": "Game",
+    "ServerId": 1000,
+    "ServerName": "Game",
+    "TagName": "GameFrameX",
+    "InnerHost": "0.0.0.0",
+    "InnerPort": 29100,
+    "OuterHost": "0.0.0.0",
+    "OuterPort": 29010,
+    "HttpUrl": "/game/api/",
+    "IsEnableHttp": true,
+    "HttpPort": 28080,
+    "HttpsPort": 0,
+    "MetricsPort": 29090,
+    "IsEnableTcp": true,
+    "IsEnableWebSocket": false,
+    "WsPort": 29110,
+    "MinModuleId": 10,
+    "MaxModuleId": 9999,
+    "DiscoveryCenterHost": "127.0.0.1",
+    "DiscoveryCenterPort": 21001,
+    "DataBaseUrl": "mongodb://127.0.0.1:27017",
+    "DataBaseName": "gameframex",
+    "IsDebug": false
+  }
+]

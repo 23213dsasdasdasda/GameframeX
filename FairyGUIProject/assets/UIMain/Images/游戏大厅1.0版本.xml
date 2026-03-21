@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="3813,2144">
+  <displayList>
+    <image id="n1_fzxf" name="n1" src="o1ao3" fileName="Images/背景.png" xy="0,0"/>
+    <image id="n2_fzxf" name="n2" src="o1ao4" fileName="Images/图层 1.png" xy="2838,243"/>
+    <image id="n3_fzxf" name="n3" src="o1ao5" fileName="Images/图层 12.png" xy="2282,27"/>
+    <image id="n4_fzxf" name="n4" src="o1ao6" fileName="Images/未标题-5.png" xy="0,1707"/>
+    <image id="n5_fzxf" name="n5" src="o1ao7" fileName="Images/图层 14.png" xy="1384,1921"/>
+    <image id="n6_fzxf" name="n6" src="o1ao8" fileName="Images/图层 15.png" xy="2035,1918"/>
+    <image id="n7_fzxf" name="n7" src="o1ao9" fileName="Images/图层 16.png" xy="3020,1920"/>
+    <image id="n8_fzxf" name="n8" src="o1aoa" fileName="Images/icongirl.png" xy="113,1882"/>
+    <image id="n10_fzxf" name="n10" src="o1aoc" fileName="Images/图层 7.png" xy="68,1335"/>
+    <image id="n11_fzxf" name="n11" src="o1aod" fileName="Images/图层 8.png" xy="23,1067"/>
+    <image id="n12_fzxf" name="n12" src="o1aoe" fileName="Images/图层 9.png" xy="0,783"/>
+    <image id="n13_fzxf" name="n13" src="o1aof" fileName="Images/图层 10.png" xy="23,494"/>
+    <image id="n14_fzxf" name="n14" src="o1aog" fileName="Images/图层 11.png" xy="5,243"/>
+    <image id="n15_fzxf" name="n15" src="o1aoh" fileName="Images/图层 5.png" xy="30,0"/>
+    <text id="n16_fzxf" name="n16" xy="-4,-4" size="8,8" font="AdobeInvisFont" fontSize="151" vAlign="middle" autoSize="none" text=""/>
+  </displayList>
+</component>

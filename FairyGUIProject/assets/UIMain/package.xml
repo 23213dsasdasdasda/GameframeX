@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="q9u97yzf">
+  <resources>
+    <component id="xws70" name="UIMain.xml" path="/" exported="true"/>
+    <component id="xws71" name="BagButton.xml" path="/"/>
+    <image id="ob7a2" name="background_05_sample_00_1920.png" path="/Images/"/>
+    <image id="o1ao3" name="背景.png" path="/Images/"/>
+    <image id="o1ao4" name="图层 1.png" path="/Images/"/>
+    <image id="o1ao5" name="图层 12.png" path="/Images/"/>
+    <image id="o1ao6" name="未标题-5.png" path="/Images/"/>
+    <image id="o1ao7" name="图层 14.png" path="/Images/"/>
+    <image id="o1ao8" name="图层 15.png" path="/Images/"/>
+    <image id="o1ao9" name="图层 16.png" path="/Images/"/>
+    <image id="o1aoa" name="icongirl.png" path="/Images/"/>
+    <image id="o1aob" name="图层 6.png" path="/Images/"/>
+    <image id="o1aoc" name="图层 7.png" path="/Images/"/>
+    <image id="o1aod" name="图层 8.png" path="/Images/"/>
+    <image id="o1aoe" name="图层 9.png" path="/Images/"/>
+    <image id="o1aof" name="图层 10.png" path="/Images/"/>
+    <image id="o1aog" name="图层 11.png" path="/Images/"/>
+    <image id="o1aoh" name="图层 5.png" path="/Images/"/>
+    <component id="o1aoi" name="游戏大厅1.0版本.xml" path="/Images/"/>
+  </resources>
+  <publish name="" genCode="true"/>
+</packageDescription>
