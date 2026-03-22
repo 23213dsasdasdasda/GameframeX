@@ -45,8 +45,15 @@ public class AccountLoginComponentAgent : StateComponentAgent<LoginComponent, Lo
 {
     private static void AppendTrace(string message)
     {
-        var line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {message}{Environment.NewLine}";
-        File.AppendAllText("/app/logs/login_trace.log", line);
+        try
+        {
+            var logDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
+            Directory.CreateDirectory(logDirectory);
+        }
+        catch
+        {
+            // Tracing must not break login flow.
+        }
     }
 
     public async Task OnLogin(INetWorkChannel workChannel, ReqLogin reqLogin)

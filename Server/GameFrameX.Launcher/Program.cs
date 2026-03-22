@@ -24,5 +24,6 @@ internal static class Program
 #else
         options.IsConsole = false;
 #endif
+        options.IsConsole = true;
     }
 }

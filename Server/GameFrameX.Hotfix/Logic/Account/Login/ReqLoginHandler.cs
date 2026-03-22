@@ -36,8 +36,17 @@ internal sealed class ReqLoginHandler : GlobalComponentHandler<ReqLogin>
 {
     private static void AppendTrace(string message)
     {
-        var line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {message}{Environment.NewLine}";
-        File.AppendAllText("/app/logs/login_trace.log", line);
+        try
+        {
+            var logDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
+            Directory.CreateDirectory(logDirectory);
+            var line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {message}{Environment.NewLine}";
+            File.AppendAllText(Path.Combine(logDirectory, "login_trace.log"), line);
+        }
+        catch
+        {
+            // Tracing must not break login flow.
+        }
     }
 
     protected override Type ComponentAgentType => typeof(AccountLoginComponentAgent);

@@ -4,13 +4,13 @@ namespace Hotfix.Network
 {
     public static class GameApiUrl
     {
-        // Development/testing endpoint.
+        // Editor/development endpoint. Point this to your active game server.
         private const string DevelopmentBaseUrl = "http://47.113.221.3:28080";
 
         // Production endpoint. Prefer HTTPS + domain in online environment.
         private const string ProductionBaseUrl = "https://47.113.221.3:28080";
 
-        // Development/testing TCP game server.
+        // Editor/development TCP game server. Point this to your active game server.
         private const string DevelopmentTcpHost = "47.113.221.3";
         private const int DevelopmentTcpPort = 29100;
 
