@@ -1,4 +1,4 @@
-﻿// ==========================================================================================
+// ==========================================================================================
 //  GameFrameX 组织及其衍生项目的版权、商标、专利及其他相关权利
 //  GameFrameX organization and its derivative projects' copyrights, trademarks, patents, and related rights
 //  均受中华人民共和国及相关国际法律法规保护。
@@ -28,15 +28,6 @@
 //  官方文档：https://gameframex.doc.alianblank.com/
 //  Official Documentation: https://gameframex.doc.alianblank.com/
 // ==========================================================================================
-
-using GameFrameX.Apps.Server.Component;
-using GameFrameX.Apps.Server.Entity;
-using GameFrameX.Core.Abstractions.Attribute;
-using GameFrameX.Core.Abstractions.Events;
-using GameFrameX.Core.Timer.Handler;
-using GameFrameX.Foundation.Utility;
-using GameFrameX.Hotfix.Logic.Player.Login;
-
 namespace GameFrameX.Hotfix.Logic.Server;
 
 public class ServerComponentAgent : StateComponentAgent<ServerComponent, ServerState>
@@ -152,6 +143,83 @@ public class ServerComponentAgent : StateComponentAgent<ServerComponent, ServerS
         return Task.FromResult(false);
     }
 
+    [Service]
+    public virtual async Task<RespMatchStart> StartMatch(long playerId)
+    {
+        var response = new RespMatchStart();
+        if (playerId <= 0)
+        {
+            response.ErrorCode = (int)OperationStatusCode.Unprocessable;
+            return response;
+        }
+
+        if (OwnerComponent.PlayerRoomMap.TryGetValue(playerId, out var roomId))
+        {
+            response.RoomId = roomId;
+            response.ErrorCode = (int)OperationStatusCode.HasExist;
+            return response;
+        }
+
+        if (!OwnerComponent.MatchQueue.Contains(playerId))
+        {
+            OwnerComponent.MatchQueue.Add(playerId);
+        }
+
+        response.IsMatching = true;
+        response.QueueCount = OwnerComponent.MatchQueue.Count;
+        await TryMatchAsync();
+        if (OwnerComponent.PlayerRoomMap.TryGetValue(playerId, out var matchedRoomId))
+        {
+            response.RoomId = matchedRoomId;
+            response.IsMatching = false;
+        }
+
+        return response;
+    }
+
+    [Service]
+    public virtual Task<RespMatchCancel> CancelMatch(long playerId)
+    {
+        var response = new RespMatchCancel();
+        response.IsCancelled = OwnerComponent.MatchQueue.Remove(playerId);
+        response.QueueCount = OwnerComponent.MatchQueue.Count;
+        return Task.FromResult(response);
+    }
+
+    [Service]
+    public virtual Task<RespMatchRoomReady> SetRoomReady(long playerId, bool isReady)
+    {
+        var response = new RespMatchRoomReady
+        {
+            IsReady = isReady
+        };
+
+        if (!OwnerComponent.PlayerRoomMap.TryGetValue(playerId, out var roomId))
+        {
+            response.ErrorCode = (int)OperationStatusCode.NotFound;
+            return Task.FromResult(response);
+        }
+
+        if (!OwnerComponent.MatchRoomMap.TryGetValue(roomId, out var room))
+        {
+            response.ErrorCode = (int)OperationStatusCode.NotFound;
+            return Task.FromResult(response);
+        }
+
+        var player = room.PlayerList.FirstOrDefault(m => m.PlayerId == playerId);
+        if (player == null)
+        {
+            response.ErrorCode = (int)OperationStatusCode.NotFound;
+            return Task.FromResult(response);
+        }
+
+        player.IsReady = isReady;
+        response.RoomId = room.RoomId;
+        response.PlayerList = BuildMatchRoomPlayerInfoList(room);
+        _ = NotifyMatchRoomChangedAsync(room);
+        return Task.FromResult(response);
+    }
+
     /*******************演示代码**************************/
     [Service]
     [ThreadSafe]
@@ -208,4 +276,136 @@ public class ServerComponentAgent : StateComponentAgent<ServerComponent, ServerS
         }
     }
     /*******************演示代码**************************/
+
+    private async Task TryMatchAsync()
+    {
+        while (OwnerComponent.MatchQueue.Count >= 2)
+        {
+            var playerId1 = TakeNextMatchPlayer();
+            var playerId2 = TakeNextMatchPlayer();
+            if (playerId1 == 0 || playerId2 == 0)
+            {
+                return;
+            }
+
+            var room = await CreateRoomAsync(playerId1, playerId2);
+            if (room == null)
+            {
+                continue;
+            }
+
+            await NotifyMatchSuccessAsync(room);
+        }
+    }
+
+    private long TakeNextMatchPlayer()
+    {
+        while (OwnerComponent.MatchQueue.Count > 0)
+        {
+            var playerId = OwnerComponent.MatchQueue[0];
+            OwnerComponent.MatchQueue.RemoveAt(0);
+            if (playerId == 0 || OwnerComponent.PlayerRoomMap.ContainsKey(playerId))
+            {
+                continue;
+            }
+
+            var session = SessionManager.GetByRoleId(playerId);
+            if (session == null)
+            {
+                continue;
+            }
+
+            return playerId;
+        }
+
+        return 0;
+    }
+
+    private async Task<MatchRoomRuntime> CreateRoomAsync(long playerId1, long playerId2)
+    {
+        var player1 = await LoadMatchPlayerAsync(playerId1);
+        var player2 = await LoadMatchPlayerAsync(playerId2);
+        if (player1 == null || player2 == null)
+        {
+            return null;
+        }
+
+        var room = new MatchRoomRuntime
+        {
+            RoomId = ActorIdGenerator.GetUniqueId(),
+            CreateTime = TimerHelper.UnixTimeSeconds(),
+            PlayerList = new List<MatchRoomPlayerRuntime> { player1, player2 }
+        };
+
+        OwnerComponent.MatchRoomMap[room.RoomId] = room;
+        OwnerComponent.PlayerRoomMap[playerId1] = room.RoomId;
+        OwnerComponent.PlayerRoomMap[playerId2] = room.RoomId;
+        return room;
+    }
+
+    private static async Task<MatchRoomPlayerRuntime> LoadMatchPlayerAsync(long playerId)
+    {
+        var playerState = await GameDb.FindAsync<PlayerState>(m => m.Id == playerId, false);
+        if (playerState == null)
+        {
+            return null;
+        }
+
+        return new MatchRoomPlayerRuntime
+        {
+            PlayerId = playerState.Id,
+            Name = string.IsNullOrWhiteSpace(playerState.Name) ? playerState.RoleName : playerState.Name,
+            Level = playerState.Level == 0 ? 1u : playerState.Level,
+            Avatar = playerState.Avatar,
+            IsReady = false
+        };
+    }
+
+    private static async Task NotifyMatchSuccessAsync(MatchRoomRuntime room)
+    {
+        var notify = new NotifyMatchSuccess
+        {
+            RoomId = room.RoomId,
+            PlayerList = BuildMatchRoomPlayerInfoList(room)
+        };
+
+        foreach (var player in room.PlayerList)
+        {
+            var session = SessionManager.GetByRoleId(player.PlayerId);
+            if (session != null)
+            {
+                await session.WriteAsync(notify);
+            }
+        }
+    }
+
+    private static async Task NotifyMatchRoomChangedAsync(MatchRoomRuntime room)
+    {
+        var notify = new NotifyMatchRoomChanged
+        {
+            RoomId = room.RoomId,
+            PlayerList = BuildMatchRoomPlayerInfoList(room)
+        };
+
+        foreach (var player in room.PlayerList)
+        {
+            var session = SessionManager.GetByRoleId(player.PlayerId);
+            if (session != null)
+            {
+                await session.WriteAsync(notify);
+            }
+        }
+    }
+
+    private static List<MatchRoomPlayerInfo> BuildMatchRoomPlayerInfoList(MatchRoomRuntime room)
+    {
+        return room.PlayerList.Select(m => new MatchRoomPlayerInfo
+        {
+            PlayerId = m.PlayerId,
+            Name = m.Name,
+            Level = m.Level,
+            Avatar = m.Avatar,
+            IsReady = m.IsReady
+        }).ToList();
+    }
 }

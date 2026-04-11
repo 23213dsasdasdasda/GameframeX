@@ -1,4 +1,4 @@
-﻿// ==========================================================================================
+// ==========================================================================================
 //  GameFrameX 组织及其衍生项目的版权、商标、专利及其他相关权利
 //  GameFrameX organization and its derivative projects' copyrights, trademarks, patents, and related rights
 //  均受中华人民共和国及相关国际法律法规保护。
@@ -28,11 +28,6 @@
 //  官方文档：https://gameframex.doc.alianblank.com/
 //  Official Documentation: https://gameframex.doc.alianblank.com/
 // ==========================================================================================
-
-
-
-using GameFrameX.Apps.Server.Entity;
-
 namespace GameFrameX.Apps.Server.Component;
 
 [ComponentType(GlobalConst.ActorTypeServer)]
@@ -42,4 +37,10 @@ public class ServerComponent : StateComponent<ServerState>
     /// 存放在此处的数据不会回存到数据库
     /// </summary>
     public HashSet<long> OnlineSet = new();
+
+    public List<long> MatchQueue = new();
+
+    public Dictionary<long, MatchRoomRuntime> MatchRoomMap = new();
+
+    public Dictionary<long, long> PlayerRoomMap = new();
 }

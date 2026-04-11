@@ -114,3 +114,66 @@ message ReqPlayerPet
 {
   int64 PlayerId = 1;
 }
+
+// 请求开始匹配
+message ReqMatchStart
+{
+}
+
+// 请求开始匹配返回
+message RespMatchStart
+{
+  bool IsMatching = 1; // 是否已进入匹配队列
+  int32 QueueCount = 2; // 当前匹配队列人数
+  int64 RoomId = 3; // 当前房间ID，未匹配成功时为0
+}
+
+// 请求取消匹配
+message ReqMatchCancel
+{
+}
+
+// 请求取消匹配返回
+message RespMatchCancel
+{
+  bool IsCancelled = 1; // 是否取消成功
+  int32 QueueCount = 2; // 当前匹配队列人数
+}
+
+// 房间玩家信息
+message MatchRoomPlayerInfo
+{
+  int64 PlayerId = 1; // 玩家ID
+  string Name = 2; // 玩家名称
+  uint32 Level = 3; // 玩家等级
+  uint32 Avatar = 4; // 玩家头像
+  bool IsReady = 5; // 是否已准备
+}
+
+// 匹配成功通知
+message NotifyMatchSuccess
+{
+  int64 RoomId = 1; // 房间ID
+  repeated MatchRoomPlayerInfo PlayerList = 2; // 房间玩家列表
+}
+
+// 请求房间准备
+message ReqMatchRoomReady
+{
+  bool IsReady = 1; // 是否准备
+}
+
+// 请求房间准备返回
+message RespMatchRoomReady
+{
+  int64 RoomId = 1; // 房间ID
+  bool IsReady = 2; // 当前玩家是否准备
+  repeated MatchRoomPlayerInfo PlayerList = 3; // 房间玩家列表
+}
+
+// 房间状态变更通知
+message NotifyMatchRoomChanged
+{
+  int64 RoomId = 1; // 房间ID
+  repeated MatchRoomPlayerInfo PlayerList = 2; // 房间玩家列表
+}

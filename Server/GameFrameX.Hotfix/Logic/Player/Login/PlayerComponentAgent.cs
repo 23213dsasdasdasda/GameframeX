@@ -1,4 +1,4 @@
-﻿// ==========================================================================================
+// ==========================================================================================
 //  GameFrameX 组织及其衍生项目的版权、商标、专利及其他相关权利
 //  GameFrameX organization and its derivative projects' copyrights, trademarks, patents, and related rights
 //  均受中华人民共和国及相关国际法律法规保护。
@@ -28,8 +28,6 @@
 //  官方文档：https://gameframex.doc.alianblank.com/
 //  Official Documentation: https://gameframex.doc.alianblank.com/
 // ==========================================================================================
-
-
 using GameFrameX.Apps.Common.Session;
 using GameFrameX.Apps.Player.Player.Component;
 using GameFrameX.Apps.Player.Player.Entity;
@@ -41,9 +39,10 @@ public class PlayerComponentAgent : StateComponentAgent<PlayerComponent, PlayerS
 {
     public async Task OnLogout()
     {
+        var serverComponent = await ActorManager.GetComponentAgent<ServerComponentAgent>();
+        await serverComponent.CancelMatch(ActorId);
         //移除在线玩家
-        var serverComp = await ActorManager.GetComponentAgent<ServerComponentAgent>();
-        await serverComp.RemoveOnlineRole(ActorId);
+        await serverComponent.RemoveOnlineRole(ActorId);
         //下线后会被自动回收
         SetAutoRecycle(true);
         QuartzTimer.Remove(ScheduleIdSet);
@@ -102,6 +101,44 @@ public class PlayerComponentAgent : StateComponentAgent<PlayerComponent, PlayerS
     {
         ArgumentNullException.ThrowIfNull(request);
         await OwnerComponent.OnPlayerPet(request.PlayerId);
+    }
+
+    public async Task OnMatchStart(RespMatchStart response)
+    {
+        ArgumentNullException.ThrowIfNull(response);
+        var serverComp = await ActorManager.GetComponentAgent<ServerComponentAgent>();
+        var result = await serverComp.StartMatch(ActorId);
+        CopyMatchStartResult(result, response);
+    }
+
+    public async Task OnMatchCancel(RespMatchCancel response)
+    {
+        ArgumentNullException.ThrowIfNull(response);
+        var serverComp = await ActorManager.GetComponentAgent<ServerComponentAgent>();
+        var result = await serverComp.CancelMatch(ActorId);
+        response.IsCancelled = result.IsCancelled;
+        response.QueueCount = result.QueueCount;
+        response.ErrorCode = result.ErrorCode;
+    }
+
+    public async Task OnMatchRoomReady(ReqMatchRoomReady request, RespMatchRoomReady response)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(response);
+        var serverComp = await ActorManager.GetComponentAgent<ServerComponentAgent>();
+        var result = await serverComp.SetRoomReady(ActorId, request.IsReady);
+        response.RoomId = result.RoomId;
+        response.IsReady = result.IsReady;
+        response.ErrorCode = result.ErrorCode;
+        response.PlayerList = result.PlayerList ?? new List<MatchRoomPlayerInfo>();
+    }
+
+    private static void CopyMatchStartResult(RespMatchStart source, RespMatchStart target)
+    {
+        target.IsMatching = source.IsMatching;
+        target.QueueCount = source.QueueCount;
+        target.RoomId = source.RoomId;
+        target.ErrorCode = source.ErrorCode;
     }
     
     
