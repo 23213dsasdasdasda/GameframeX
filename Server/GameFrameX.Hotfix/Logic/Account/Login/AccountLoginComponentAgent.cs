@@ -30,14 +30,11 @@
 // ==========================================================================================
 
 using System;
-using System.Linq;
 using GameFrameX.Apps.Account.Login.Component;
 using GameFrameX.Apps.Account.Login.Entity;
-using GameFrameX.Apps.Player.Player.Entity;
 using GameFrameX.DataBase;
 using GameFrameX.Hotfix.Logic.Player.Login;
 using GameFrameX.Monitor.Account;
-using GameFrameX.Monitor.Player;
 
 namespace GameFrameX.Hotfix.Logic.Account.Login;
 
@@ -115,14 +112,24 @@ public class AccountLoginComponentAgent : StateComponentAgent<LoginComponent, Lo
             return;
         }
 
-        try
+    }
+
+    public async Task OnPlayerLogin(INetWorkChannel workChannel, ReqPlayerLogin reqLogin, RespPlayerLogin response)
+    {
+        ArgumentNullException.ThrowIfNull(workChannel);
+        ArgumentNullException.ThrowIfNull(reqLogin);
+        ArgumentNullException.ThrowIfNull(response);
+
+        var playerState = await OwnerComponent.OnPlayerLogin(reqLogin);
+        if (playerState == null)
         {
-            await AutoPlayerLogin(workChannel, reqLogin, loginState);
+            response.ErrorCode = (int)OperationStatusCode.NotFound;
+            return;
         }
-        catch (Exception ex)
-        {
-            LogHelper.Error($"[AutoPlayerLoginException] User:{reqLogin.UserName} Err:{ex}");
-        }
+
+        workChannel.SetData(GlobalConst.ActorIdKey, playerState.Id);
+        var playerComponentAgent = await ActorManager.GetComponentAgent<PlayerComponentAgent>(playerState.Id);
+        await playerComponentAgent.OnPlayerLogin(workChannel, playerState, response);
     }
 
     private static async Task<LoginState> OnLoginInternal(ReqLogin reqLogin)
@@ -150,54 +157,6 @@ public class AccountLoginComponentAgent : StateComponentAgent<LoginComponent, Lo
         };
         await GameDb.AddOrUpdateAsync(loginState);
         return loginState;
-    }
-
-    private static async Task AutoPlayerLogin(INetWorkChannel workChannel, ReqLogin reqLogin, LoginState loginState)
-    {
-        var playerState = await GetOrCreateSinglePlayer(loginState, reqLogin.UserName);
-        if (playerState == null)
-        {
-            return;
-        }
-
-        workChannel.SetData(GlobalConst.ActorIdKey, playerState.Id);
-
-        var response = new RespPlayerLogin();
-        var playerComponentAgent = await ActorManager.GetComponentAgent<PlayerComponentAgent>(playerState.Id);
-        await playerComponentAgent.OnPlayerLogin(workChannel, playerState, response);
-        await workChannel.WriteAsync(response);
-    }
-
-    private static async Task<PlayerState> GetOrCreateSinglePlayer(LoginState loginState, string fallbackUserName)
-    {
-        var playerList = await GameDb.FindListAsync<PlayerState>(m => m.AccountId == loginState.Id);
-        var playerState = playerList?
-            .OrderBy(m => m.CreateTime)
-            .FirstOrDefault() ?? playerList?.FirstOrDefault();
-
-        if (playerState != null)
-        {
-            return playerState;
-        }
-
-        var resolvedUserName = string.IsNullOrWhiteSpace(loginState.UserName) ? fallbackUserName : loginState.UserName;
-        var roleName = string.IsNullOrWhiteSpace(loginState.NickName) ? resolvedUserName : loginState.NickName;
-        playerState = new PlayerState
-        {
-            Id = ActorIdGenerator.GetActorId(GlobalConst.ActorTypePlayer),
-            AccountId = loginState.Id,
-            UserName = resolvedUserName,
-            RoleName = roleName,
-            Name = roleName,
-            Level = 1,
-            State = 0,
-            Avatar = 0,
-            CreateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-        };
-
-        MetricsPlayerHelper.CreateCounterOptions.Inc();
-        await GameDb.SaveOneAsync(playerState);
-        return playerState;
     }
 
     private static string ResolveAccountName(ReqLogin reqLogin)

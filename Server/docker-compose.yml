@@ -12,7 +12,7 @@
     networks:
       - backend
   gameframex:
-    image: crpi-fzsaas3d2dv77v2g.cn-hangzhou.personal.cr.aliyuncs.com/aidensf/gfx:1.0.1
+    image: crpi-fzsaas3d2dv77v2g.cn-hangzhou.personal.cr.aliyuncs.com/aidensf/gfx:1.0.2
     container_name: gameframex
     ports:
       # APM 端口

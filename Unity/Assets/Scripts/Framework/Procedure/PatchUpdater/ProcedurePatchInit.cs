@@ -1,4 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using GameFrameX.Asset.Runtime;
 using GameFrameX.Fsm.Runtime;
 using GameFrameX.Procedure.Runtime;
@@ -27,19 +27,25 @@ namespace Unity.Startup.Procedure
                 return;
             }
 
-            // Game.EventSystem.Run(EventIdType.UILoadingMainSetText, "Loading...");
-            // 加载更新面板
             Start(procedureOwner);
         }
 
         async void Start(IFsm<IProcedureManager> procedureOwner)
         {
             var buildInPackageNameURL = procedureOwner.GetData<VarString>(AssetComponent.BuildInPackageName);
-            Log.Debug("下载资源的路径：" + buildInPackageNameURL);
-            await GameApp.Asset.InitPackageAsync(AssetComponent.BuildInPackageName, buildInPackageNameURL.Value, buildInPackageNameURL.Value, true);
-            procedureOwner.RemoveData(AssetComponent.BuildInPackageName);
-            await UniTask.DelayFrame();
+            if (buildInPackageNameURL == null || string.IsNullOrWhiteSpace(buildInPackageNameURL.Value))
+            {
+                Log.Warning("未获取到远程资源地址，使用内置资源继续启动。");
+                await GameApp.Asset.InitPackageAsync(AssetComponent.BuildInPackageName, string.Empty, string.Empty, true);
+            }
+            else
+            {
+                Log.Debug("下载资源的路径：" + buildInPackageNameURL.Value);
+                await GameApp.Asset.InitPackageAsync(AssetComponent.BuildInPackageName, buildInPackageNameURL.Value, buildInPackageNameURL.Value, true);
+                procedureOwner.RemoveData(AssetComponent.BuildInPackageName);
+            }
 
+            await UniTask.DelayFrame();
             ChangeState<ProcedureUpdateStaticVersion>(procedureOwner);
         }
     }

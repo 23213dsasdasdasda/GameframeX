@@ -29,10 +29,12 @@
 //  Official Documentation: https://gameframex.doc.alianblank.com/
 // ==========================================================================================
 
+using GameFrameX.Hotfix.Logic.Account.Login;
+
 namespace GameFrameX.Hotfix.Logic.Player.Login;
 
 [MessageMapping(typeof(ReqPlayerLogin))]
-internal sealed class ReqPlayerLoginHandler : GlobalRpcComponentHandler<LoginComponentAgent, ReqPlayerLogin, RespPlayerLogin>
+internal sealed class ReqPlayerLoginHandler : GlobalRpcComponentHandler<AccountLoginComponentAgent, ReqPlayerLogin, RespPlayerLogin>
 {
     protected override async Task ActionAsync(ReqPlayerLogin request, RespPlayerLogin response)
     {

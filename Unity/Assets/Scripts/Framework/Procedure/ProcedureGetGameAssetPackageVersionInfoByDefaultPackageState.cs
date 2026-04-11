@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Cysharp.Threading.Tasks;
 using GameFrameX.Asset.Runtime;
 using GameFrameX.Fsm.Runtime;
 using GameFrameX.GlobalConfig.Runtime;
@@ -11,15 +10,11 @@ using UnityEngine;
 
 namespace Unity.Startup.Procedure
 {
-    /// <summary>
-    /// 获取默认资源版本信息
-    /// </summary>
     public sealed class ProcedureGetGameAssetPackageVersionInfoByDefaultPackageState : ProcedureBase
     {
         protected override void OnEnter(IFsm<IProcedureManager> procedureOwner)
         {
             base.OnEnter(procedureOwner);
-
             GetGameAssetPackageVersionInfo(procedureOwner);
         }
 
@@ -35,33 +30,37 @@ namespace Unity.Startup.Procedure
                 HttpJsonResult httpJsonResult = Utility.Json.ToObject<HttpJsonResult>(json.Result);
                 if (httpJsonResult.Code > 0)
                 {
-                    LauncherUIHandler.SetTipText("获取资源版本信息异常, 正在重试...");
+                    LauncherUIHandler.SetTipText("Asset version unavailable, using built-in resources...");
                     Debug.LogError($"获取资源版本信息异常=> Req:{Utility.Json.ToJson(jsonParams)} Resp:{json}");
-                    await UniTask.Delay(3000);
-                    GetGameAssetPackageVersionInfo(procedureOwner);
-                }
-                else
-                {
-                    var gameAssetPackageVersion = Utility.Json.ToObject<ResponseGameAssetPackageVersion>(httpJsonResult.Data);
-
-                    var gameAppVersionPath = Path.Combine(gameAssetPackageVersion.RootPath, gameAssetPackageVersion.PackageName, gameAssetPackageVersion.Platform, gameAssetPackageVersion.AppVersion, gameAssetPackageVersion.Channel, gameAssetPackageVersion.AssetPackageName, gameAssetPackageVersion.Version) + Path.DirectorySeparatorChar;
-                    var varStringDownloadURL = ReferencePool.Acquire<VarString>();
-                    varStringDownloadURL.SetValue(gameAppVersionPath);
-                    procedureOwner.SetData(AssetComponent.BuildInPackageName, varStringDownloadURL);
-                    
-                    var varStringVersion = ReferencePool.Acquire<VarString>();
-                    varStringVersion.SetValue(gameAssetPackageVersion.Version);
-                    procedureOwner.SetData(AssetComponent.BuildInPackageName + "Version", varStringVersion);
                     ChangeState<ProcedurePatchInit>(procedureOwner);
+                    return;
                 }
+
+                var gameAssetPackageVersion = Utility.Json.ToObject<ResponseGameAssetPackageVersion>(httpJsonResult.Data);
+                var gameAppVersionPath = Path.Combine(
+                    gameAssetPackageVersion.RootPath,
+                    gameAssetPackageVersion.PackageName,
+                    gameAssetPackageVersion.Platform,
+                    gameAssetPackageVersion.AppVersion,
+                    gameAssetPackageVersion.Channel,
+                    gameAssetPackageVersion.AssetPackageName,
+                    gameAssetPackageVersion.Version) + Path.DirectorySeparatorChar;
+
+                var varStringDownloadUrl = ReferencePool.Acquire<VarString>();
+                varStringDownloadUrl.SetValue(gameAppVersionPath);
+                procedureOwner.SetData(AssetComponent.BuildInPackageName, varStringDownloadUrl);
+
+                var varStringVersion = ReferencePool.Acquire<VarString>();
+                varStringVersion.SetValue(gameAssetPackageVersion.Version);
+                procedureOwner.SetData(AssetComponent.BuildInPackageName + "Version", varStringVersion);
+                ChangeState<ProcedurePatchInit>(procedureOwner);
             }
             catch (Exception e)
             {
                 Log.Error(e);
-                LauncherUIHandler.SetTipText("获取资源版本信息异常, 正在重试...");
-                Debug.LogError($"获取资源版本信息异常=>Error:{e.Message}   Req:{Utility.Json.ToJson(jsonParams)}");
-                await UniTask.Delay(3000);
-                GetGameAssetPackageVersionInfo(procedureOwner);
+                LauncherUIHandler.SetTipText("Asset version unreachable, using built-in resources...");
+                Debug.LogError($"获取资源版本信息异常=>Error:{e.Message} Req:{Utility.Json.ToJson(jsonParams)}");
+                ChangeState<ProcedurePatchInit>(procedureOwner);
             }
         }
     }

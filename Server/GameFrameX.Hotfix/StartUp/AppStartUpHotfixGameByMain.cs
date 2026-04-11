@@ -66,13 +66,23 @@ internal partial class AppStartUpHotfixGame
 
     protected override ValueTask OnDisconnected(IAppSession appSession, CloseEventArgs disconnectEventArgs)
     {
-        LogHelper.Info("有外部客户端网络断开连接成功！。断开信息：" + appSession.SessionID + "  " + disconnectEventArgs.Reason);
+        if (GlobalSettings.IsAppRunning)
+        {
+            LogHelper.Info("有外部客户端网络断开连接成功！。断开信息：" + appSession.SessionID + "  " + disconnectEventArgs.Reason);
+        }
+
         SessionManager.Remove(appSession.SessionID);
         return ValueTask.CompletedTask;
     }
 
     protected override async ValueTask OnConnected(IAppSession appSession)
     {
+        if (!GlobalSettings.IsAppRunning)
+        {
+            await appSession.CloseAsync(default);
+            return;
+        }
+
         LogHelper.Info("有外部客户端网络连接成功！。链接信息：SessionID:" + appSession.SessionID + " RemoteEndPoint:" + appSession.RemoteEndPoint);
         var netChannel = new DefaultNetWorkChannel(appSession, Setting, null, appSession is WebSocketSession);
         var count = SessionManager.Count();
@@ -95,6 +105,11 @@ internal partial class AppStartUpHotfixGame
     /// <param name="message"></param>
     protected override async ValueTask PackageHandler(IAppSession appSession, IMessage message)
     {
+        if (!GlobalSettings.IsAppRunning)
+        {
+            return;
+        }
+
         if (message is NetworkMessagePackage messagePackage)
         {
             var netWorkChannel = SessionManager.GetChannel(appSession.SessionID);
@@ -143,6 +158,7 @@ internal partial class AppStartUpHotfixGame
 
     public override async Task StopAsync(string message = "")
     {
+        GlobalSettings.IsAppRunning = false;
         await base.StopAsync(message);
         // 断开所有连接
         await SessionManager.RemoveAll();

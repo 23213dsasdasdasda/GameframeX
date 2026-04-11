@@ -1,22 +1,20 @@
-﻿using System.Text;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Hotfix.Network
 {
     public static class GameApiUrl
     {
-        // Editor/development endpoint. Point this to your active game server.
         private const string DevelopmentBaseUrl = "http://47.113.221.3:28080";
+        private const string ProductionBaseUrl = "http://47.113.221.3:28080";
 
-        // Production endpoint. Prefer HTTPS + domain in online environment.
-        private const string ProductionBaseUrl = "https://47.113.221.3:28080";
-
-        // Editor/development TCP game server. Point this to your active game server.
         private const string DevelopmentTcpHost = "47.113.221.3";
-        private const int DevelopmentTcpPort = 29100;
+        private const int DevelopmentTcpPort = 29010;
 
-        // Production TCP game server. Prefer domain in online environment.
         private const string ProductionTcpHost = "47.113.221.3";
-        private const int ProductionTcpPort = 29100;
+        private const int ProductionTcpPort = 29010;
+
+        private const int TcpFallbackPort = 29100;
 
         public static string BaseUrl
         {
@@ -35,6 +33,16 @@ namespace Hotfix.Network
         public static string BuildGameTcpUrl()
         {
             return $"tcp://{TcpHost}:{TcpPort}";
+        }
+
+        public static IEnumerable<string> BuildGameTcpUrls()
+        {
+            yield return BuildGameTcpUrl();
+
+            if (TcpPort != TcpFallbackPort)
+            {
+                yield return $"tcp://{TcpHost}:{TcpFallbackPort}";
+            }
         }
 
         public static string TcpHost

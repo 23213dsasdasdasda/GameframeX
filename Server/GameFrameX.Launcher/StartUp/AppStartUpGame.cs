@@ -31,6 +31,7 @@
 
 using GameFrameX.DataBase.Abstractions;
 using GameFrameX.Foundation.Utility;
+using System.Text.Json;
 
 namespace GameFrameX.Launcher.StartUp;
 
@@ -40,6 +41,9 @@ namespace GameFrameX.Launcher.StartUp;
 [StartUpTag(GlobalConst.GameServiceName)]
 internal sealed class AppStartUpGame : AppStartUpBase
 {
+    private const string DefaultDataBaseUrl = "mongodb+srv://gameframex:f9v42aU9DVeFNfAF@gameframex.8taphic.mongodb.net/?retryWrites=true&w=majority";
+    private const string DefaultDataBaseName = "gameframex";
+
     public override async Task StartAsync()
     {
         string exitMessage = null;
@@ -57,7 +61,9 @@ internal sealed class AppStartUpGame : AppStartUpBase
             LogHelper.Debug("配置Actor限制逻辑结束...");
 
             LogHelper.Debug("开始启动数据库服务...");
+            LogHelper.Info($"[Mongo] init start. db={Setting.DataBaseName}, url={Setting.DataBaseUrl}");
             var initResult = await GameDb.Init<MongoDbService>(new DbOptions { ConnectionString = Setting.DataBaseUrl, Name = Setting.DataBaseName, });
+            LogHelper.Info($"[Mongo] init result={initResult}");
             if (initResult == false)
             {
                 throw new InvalidOperationException("数据库服务启动失败");
@@ -85,6 +91,7 @@ internal sealed class AppStartUpGame : AppStartUpBase
             LogHelper.Fatal(e);
         }
 
+        GlobalSettings.IsAppRunning = false;
         LogHelper.Info("退出服务器开始");
         await HotfixManager.Stop(exitMessage);
         LogHelper.Info("退出服务器成功");
@@ -92,57 +99,177 @@ internal sealed class AppStartUpGame : AppStartUpBase
 
     protected override void Init()
     {
+        var fileConfig = LoadFileConfig();
+
         if (Setting == null)
         {
             Setting = new AppSetting
             {
-                ServerId = GlobalConst.GameServiceServerId,
-                ServerType = GlobalConst.GameServiceName,
-                IsEnableTcp = true,
-                InnerPort = ushort.Parse(Environment.GetEnvironmentVariable("InnerPort") ?? "29100"),
-                MetricsPort = ushort.Parse(Environment.GetEnvironmentVariable("APMPort") ?? "29090"),
-                HttpPort = ushort.Parse(Environment.GetEnvironmentVariable("HttpPort") ?? "28080"),
-                IsEnableHttp = true,
-                WsPort = ushort.Parse(Environment.GetEnvironmentVariable("WsPort") ?? "29110"),
-                MinModuleId = short.Parse(Environment.GetEnvironmentVariable("MinModuleId") ?? "10"),
+                ServerId = GetInt("ServerId", fileConfig.ServerId, GlobalConst.GameServiceServerId),
+                ServerType = GetString("ServerType", fileConfig.ServerType, GlobalConst.GameServiceName),
+                ServerName = GetString("ServerName", fileConfig.ServerName, GetString("ServerType", fileConfig.ServerType, GlobalConst.GameServiceName)),
+                TagName = GetString("TagName", fileConfig.TagName, "GameFrameX"),
+                InnerHost = GetString("InnerHost", fileConfig.InnerHost, "0.0.0.0"),
+                InnerPort = GetUShort("InnerPort", fileConfig.InnerPort, 29100),
+                OuterHost = GetString("OuterHost", fileConfig.OuterHost, "0.0.0.0"),
+                OuterPort = GetUShort("OuterPort", fileConfig.OuterPort, 29010),
+                HttpUrl = GetString("HttpUrl", fileConfig.HttpUrl, "/game/api/"),
+                IsEnableHttp = GetBool("IsEnableHttp", fileConfig.IsEnableHttp, true),
+                HttpPort = GetUShort("HttpPort", fileConfig.HttpPort, 28080),
+                HttpsPort = GetUShort("HttpsPort", fileConfig.HttpsPort, 0),
+                MetricsPort = GetUShort("APMPort", fileConfig.MetricsPort, 29090),
+                IsEnableTcp = GetBool("IsEnableTcp", fileConfig.IsEnableTcp, true),
+                IsEnableWebSocket = GetBool("IsEnableWebSocket", fileConfig.IsEnableWebSocket, false),
+                WsPort = GetUShort("WsPort", fileConfig.WsPort, 29110),
+                MinModuleId = GetShort("MinModuleId", fileConfig.MinModuleId, 10),
+                MaxModuleId = GetShort("MaxModuleId", fileConfig.MaxModuleId, 9999),
+                DiscoveryCenterHost = GetString("DiscoveryCenterIp", fileConfig.DiscoveryCenterHost, "127.0.0.1"),
+                DiscoveryCenterPort = GetUShort("DiscoveryCenterPort", fileConfig.DiscoveryCenterPort, 21001),
+                DataBaseUrl = GetString("DataBaseUrl", fileConfig.DataBaseUrl, DefaultDataBaseUrl),
+                DataBaseName = GetString("DataBaseName", fileConfig.DataBaseName, DefaultDataBaseName),
+                IsDebug = GetBool("IsDebug", fileConfig.IsDebug, false),
                 HttpIsDevelopment = true,
-                MaxModuleId = short.Parse(Environment.GetEnvironmentVariable("MaxModuleId") ?? "9999"),
-
-                DiscoveryCenterHost = Environment.GetEnvironmentVariable("DiscoveryCenterIp") ?? "127.0.0.1",
-                TagName = "GameFrameX",
-                DiscoveryCenterPort = ushort.Parse(Environment.GetEnvironmentVariable("DiscoveryCenterPort") ?? "21001"),
-
-                DataBaseUrl = Environment.GetEnvironmentVariable("DataBaseUrl")
-                              ?? "mongodb+srv://gameframex:f9v42aU9DVeFNfAF@gameframex.8taphic.mongodb.net/?retryWrites=true&w=majority",
-                DataBaseName = Environment.GetEnvironmentVariable("DataBaseName") ?? "gameframex",
             };
         }
         else
         {
-            Setting.ServerId = Setting.ServerId == 0 ? GlobalConst.GameServiceServerId : Setting.ServerId;
-            Setting.ServerType = string.IsNullOrWhiteSpace(Setting.ServerType) ? GlobalConst.GameServiceName : Setting.ServerType;
-            Setting.MinModuleId = Setting.MinModuleId == 0 ? short.Parse(Environment.GetEnvironmentVariable("MinModuleId") ?? "10") : Setting.MinModuleId;
-            Setting.MaxModuleId = Setting.MaxModuleId == 0 ? short.Parse(Environment.GetEnvironmentVariable("MaxModuleId") ?? "9999") : Setting.MaxModuleId;
-            Setting.InnerPort = Setting.InnerPort == 0 ? ushort.Parse(Environment.GetEnvironmentVariable("InnerPort") ?? "29100") : Setting.InnerPort;
-            Setting.WsPort = Setting.WsPort == 0 ? ushort.Parse(Environment.GetEnvironmentVariable("WsPort") ?? "29110") : Setting.WsPort;
-            Setting.HttpPort = Setting.HttpPort == 0 ? ushort.Parse(Environment.GetEnvironmentVariable("HttpPort") ?? "28080") : Setting.HttpPort;
-            Setting.MetricsPort = Setting.MetricsPort == 0 ? ushort.Parse(Environment.GetEnvironmentVariable("APMPort") ?? "29090") : Setting.MetricsPort;
-            Setting.DiscoveryCenterHost = string.IsNullOrWhiteSpace(Setting.DiscoveryCenterHost)
-                ? Environment.GetEnvironmentVariable("DiscoveryCenterIp") ?? "127.0.0.1"
-                : Setting.DiscoveryCenterHost;
-            Setting.DiscoveryCenterPort = Setting.DiscoveryCenterPort == 0
-                ? ushort.Parse(Environment.GetEnvironmentVariable("DiscoveryCenterPort") ?? "21001")
-                : Setting.DiscoveryCenterPort;
-            Setting.TagName = string.IsNullOrWhiteSpace(Setting.TagName) ? "GameFrameX" : Setting.TagName;
-            Setting.DataBaseUrl = string.IsNullOrWhiteSpace(Setting.DataBaseUrl)
-                ? Environment.GetEnvironmentVariable("DataBaseUrl")
-                  ?? "mongodb+srv://gameframex:f9v42aU9DVeFNfAF@gameframex.8taphic.mongodb.net/?retryWrites=true&w=majority"
-                : Setting.DataBaseUrl;
-            Setting.DataBaseName = string.IsNullOrWhiteSpace(Setting.DataBaseName)
-                ? Environment.GetEnvironmentVariable("DataBaseName") ?? "gameframex"
-                : Setting.DataBaseName;
+            Setting.ServerId = GetInt("ServerId", fileConfig.ServerId, Setting.ServerId == 0 ? GlobalConst.GameServiceServerId : Setting.ServerId);
+            Setting.ServerType = GetString("ServerType", fileConfig.ServerType, string.IsNullOrWhiteSpace(Setting.ServerType) ? GlobalConst.GameServiceName : Setting.ServerType);
+            Setting.ServerName = GetString("ServerName", fileConfig.ServerName, string.IsNullOrWhiteSpace(Setting.ServerName) ? Setting.ServerType : Setting.ServerName);
+            Setting.TagName = GetString("TagName", fileConfig.TagName, string.IsNullOrWhiteSpace(Setting.TagName) ? "GameFrameX" : Setting.TagName);
+            Setting.InnerHost = GetString("InnerHost", fileConfig.InnerHost, string.IsNullOrWhiteSpace(Setting.InnerHost) ? "0.0.0.0" : Setting.InnerHost);
+            Setting.InnerPort = GetUShort("InnerPort", fileConfig.InnerPort, Setting.InnerPort == 0 ? (ushort)29100 : Setting.InnerPort);
+            Setting.OuterHost = GetString("OuterHost", fileConfig.OuterHost, string.IsNullOrWhiteSpace(Setting.OuterHost) ? "0.0.0.0" : Setting.OuterHost);
+            Setting.OuterPort = GetUShort("OuterPort", fileConfig.OuterPort, Setting.OuterPort == 0 ? (ushort)29010 : Setting.OuterPort);
+            Setting.HttpUrl = GetString("HttpUrl", fileConfig.HttpUrl, string.IsNullOrWhiteSpace(Setting.HttpUrl) ? "/game/api/" : Setting.HttpUrl);
+            Setting.IsEnableHttp = GetBool("IsEnableHttp", fileConfig.IsEnableHttp, Setting.IsEnableHttp);
+            Setting.HttpPort = GetUShort("HttpPort", fileConfig.HttpPort, Setting.HttpPort == 0 ? (ushort)28080 : Setting.HttpPort);
+            Setting.HttpsPort = GetUShort("HttpsPort", fileConfig.HttpsPort, Setting.HttpsPort);
+            Setting.MetricsPort = GetUShort("APMPort", fileConfig.MetricsPort, Setting.MetricsPort == 0 ? (ushort)29090 : Setting.MetricsPort);
+            Setting.IsEnableTcp = GetBool("IsEnableTcp", fileConfig.IsEnableTcp, Setting.IsEnableTcp);
+            Setting.IsEnableWebSocket = GetBool("IsEnableWebSocket", fileConfig.IsEnableWebSocket, Setting.IsEnableWebSocket);
+            Setting.WsPort = GetUShort("WsPort", fileConfig.WsPort, Setting.WsPort == 0 ? (ushort)29110 : Setting.WsPort);
+            Setting.MinModuleId = GetShort("MinModuleId", fileConfig.MinModuleId, Setting.MinModuleId == 0 ? (short)10 : Setting.MinModuleId);
+            Setting.MaxModuleId = GetShort("MaxModuleId", fileConfig.MaxModuleId, Setting.MaxModuleId == 0 ? (short)9999 : Setting.MaxModuleId);
+            Setting.DiscoveryCenterHost = GetString("DiscoveryCenterIp", fileConfig.DiscoveryCenterHost, string.IsNullOrWhiteSpace(Setting.DiscoveryCenterHost) ? "127.0.0.1" : Setting.DiscoveryCenterHost);
+            Setting.DiscoveryCenterPort = GetUShort("DiscoveryCenterPort", fileConfig.DiscoveryCenterPort, Setting.DiscoveryCenterPort == 0 ? (ushort)21001 : Setting.DiscoveryCenterPort);
+            Setting.DataBaseUrl = GetString("DataBaseUrl", fileConfig.DataBaseUrl, string.IsNullOrWhiteSpace(Setting.DataBaseUrl) ? DefaultDataBaseUrl : Setting.DataBaseUrl);
+            Setting.DataBaseName = GetString("DataBaseName", fileConfig.DataBaseName, string.IsNullOrWhiteSpace(Setting.DataBaseName) ? DefaultDataBaseName : Setting.DataBaseName);
+            Setting.IsDebug = GetBool("IsDebug", fileConfig.IsDebug, Setting.IsDebug);
         }
 
         base.Init();
+    }
+
+    private static AppConfigFile LoadFileConfig()
+    {
+        foreach (var path in GetConfigCandidatePaths())
+        {
+            if (!File.Exists(path))
+            {
+                continue;
+            }
+
+            try
+            {
+                var json = File.ReadAllText(path);
+                var configs = JsonSerializer.Deserialize<List<AppConfigFile>>(json);
+                var config = configs?.FirstOrDefault();
+                if (config != null)
+                {
+                    LogHelper.Info($"加载配置文件成功: {path}");
+                    return config;
+                }
+            }
+            catch (Exception e)
+            {
+                LogHelper.Error($"加载配置文件失败: {path}, error={e.Message}");
+            }
+        }
+
+        return new AppConfigFile();
+    }
+
+    private static IEnumerable<string> GetConfigCandidatePaths()
+    {
+        var baseDirectory = AppContext.BaseDirectory;
+        yield return Path.Combine(baseDirectory, "app_config.json");
+        yield return Path.Combine(baseDirectory, "Configs", "app_config.json");
+        yield return Path.GetFullPath(Path.Combine(baseDirectory, "..", "..", "Configs", "app_config.json"));
+        yield return Path.GetFullPath(Path.Combine(baseDirectory, "..", "..", "..", "Configs", "app_config.json"));
+        yield return Path.Combine(Directory.GetCurrentDirectory(), "app_config.json");
+        yield return Path.Combine(Directory.GetCurrentDirectory(), "Configs", "app_config.json");
+    }
+
+    private static string GetString(string envKey, string fileValue, string defaultValue)
+    {
+        return Environment.GetEnvironmentVariable(envKey) ?? fileValue ?? defaultValue;
+    }
+
+    private static bool GetBool(string envKey, bool? fileValue, bool defaultValue)
+    {
+        var env = Environment.GetEnvironmentVariable(envKey);
+        return bool.TryParse(env, out var result) ? result : fileValue ?? defaultValue;
+    }
+
+    private static ushort GetUShort(string envKey, ushort? fileValue, ushort defaultValue)
+    {
+        var env = Environment.GetEnvironmentVariable(envKey);
+        return ushort.TryParse(env, out var result) ? result : fileValue ?? defaultValue;
+    }
+
+    private static short GetShort(string envKey, short? fileValue, short defaultValue)
+    {
+        var env = Environment.GetEnvironmentVariable(envKey);
+        return short.TryParse(env, out var result) ? result : fileValue ?? defaultValue;
+    }
+
+    private static long GetLong(string envKey, long? fileValue, long defaultValue)
+    {
+        var env = Environment.GetEnvironmentVariable(envKey);
+        return long.TryParse(env, out var result) ? result : fileValue ?? defaultValue;
+    }
+
+    private static int GetInt(string envKey, long? fileValue, int defaultValue)
+    {
+        var env = Environment.GetEnvironmentVariable(envKey);
+        if (int.TryParse(env, out var result))
+        {
+            return result;
+        }
+
+        if (fileValue.HasValue && fileValue.Value >= int.MinValue && fileValue.Value <= int.MaxValue)
+        {
+            return (int)fileValue.Value;
+        }
+
+        return defaultValue;
+    }
+
+    private sealed class AppConfigFile
+    {
+        public string ServerType { get; set; }
+        public long? ServerId { get; set; }
+        public string ServerName { get; set; }
+        public string TagName { get; set; }
+        public string InnerHost { get; set; }
+        public ushort? InnerPort { get; set; }
+        public string OuterHost { get; set; }
+        public ushort? OuterPort { get; set; }
+        public string HttpUrl { get; set; }
+        public bool? IsEnableHttp { get; set; }
+        public ushort? HttpPort { get; set; }
+        public ushort? HttpsPort { get; set; }
+        public ushort? MetricsPort { get; set; }
+        public bool? IsEnableTcp { get; set; }
+        public bool? IsEnableWebSocket { get; set; }
+        public ushort? WsPort { get; set; }
+        public short? MinModuleId { get; set; }
+        public short? MaxModuleId { get; set; }
+        public string DiscoveryCenterHost { get; set; }
+        public ushort? DiscoveryCenterPort { get; set; }
+        public string DataBaseUrl { get; set; }
+        public string DataBaseName { get; set; }
+        public bool? IsDebug { get; set; }
     }
 }

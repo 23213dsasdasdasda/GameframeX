@@ -106,38 +106,15 @@ namespace Hotfix.UI
 
             #endregion
 
-            #region 获取角色列表
-
-            ReqPlayerList reqPlayerList = new ReqPlayerList();
-
-            reqPlayerList.Id = req.Id;
-            var respPlayerList = await GameApp.WebProtoBuff.Post<RespPlayerList>(GameApiUrl.BuildGameApiUrl(nameof(ReqPlayerList)), reqPlayerList);
-
-            if (respPlayerList.ErrorCode > 0)
-            {
-                Log.Error("登录失败，错误信息:" + respPlayerList.ErrorCode);
-                return;
-            }
-
-            AccountManager.Instance.PlayerList = respPlayerList.PlayerList;
-
-            #endregion
-
-            PlayerInfo autoPlayer = null;
-            if (respPlayerCreate != null && respPlayerCreate.PlayerInfo != null)
-            {
-                autoPlayer = respPlayerCreate.PlayerInfo;
-            }
-            else if (respPlayerList.PlayerList != null && respPlayerList.PlayerList.Count > 0)
-            {
-                autoPlayer = respPlayerList.PlayerList[0];
-            }
+            var autoPlayer = respPlayerCreate?.PlayerInfo;
 
             if (autoPlayer == null)
             {
                 Log.Error("创建角色后未找到可登录的角色信息。");
                 return;
             }
+
+            AccountManager.Instance.PlayerList = new System.Collections.Generic.List<PlayerInfo> { autoPlayer };
 
             var loginResult = await GameServerLoginHelper.LoginAsync(
                 autoPlayer,

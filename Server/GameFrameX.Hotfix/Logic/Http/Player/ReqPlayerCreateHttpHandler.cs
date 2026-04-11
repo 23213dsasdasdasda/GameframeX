@@ -67,6 +67,12 @@ public sealed class ReqPlayerCreateHttpHandler : BaseHttpHandler
 
     private async Task<PlayerState> OnPlayerCreate(ReqPlayerCreate reqPlayerCreate)
     {
+        var existingPlayer = await GameDb.FindAsync<PlayerState>(m => m.AccountId == reqPlayerCreate.Id, false);
+        if (existingPlayer != null)
+        {
+            return existingPlayer;
+        }
+
         var playerState = new PlayerState
         {
             Id = ActorIdGenerator.GetActorId(GlobalConst.ActorTypePlayer),

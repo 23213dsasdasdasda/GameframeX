@@ -47,42 +47,56 @@ public sealed class ReqPlayerListHttpHandler : BaseHttpHandler
 {
     public override async Task<MessageObject> Action(string ip, string url, Dictionary<string, object> paramMap, MessageObject messageObject)
     {
-        var request = (ReqPlayerList)messageObject;
+        try
+        {
+            var request = (ReqPlayerList)messageObject;
+            LogHelper.Info($"[ReqPlayerList] request start. ip={ip}, url={url}, accountId={request?.Id}, uniqueId={request?.UniqueId}");
 
-        var respPlayerList = new RespPlayerList
-        {
-            UniqueId = request.UniqueId,
-            PlayerList = new List<PlayerInfo>(),
-        };
-        if (request.Id == default)
-        {
+            var respPlayerList = new RespPlayerList
+            {
+                UniqueId = request.UniqueId,
+                PlayerList = new List<PlayerInfo>(),
+            };
+            if (request.Id == default)
+            {
+                LogHelper.Info("[ReqPlayerList] request id is default, return empty list.");
+                return respPlayerList;
+            }
+
+            var playerList = await GetPlayerList(request);
+
+            if (playerList != null)
+            {
+                foreach (var playerState in playerList)
+                {
+                    var playerInfo = new PlayerInfo
+                    {
+                        Id = playerState.Id,
+                        Name = playerState.Name,
+                        Level = playerState.Level,
+                        State = playerState.State,
+                        Avatar = playerState.Avatar,
+                    };
+                    respPlayerList.PlayerList.Add(playerInfo);
+                }
+            }
+
+            LogHelper.Info($"[ReqPlayerList] request success. accountId={request.Id}, count={respPlayerList.PlayerList.Count}");
             return respPlayerList;
         }
-
-        var playerList = await GetPlayerList(request);
-
-        if (playerList != null)
+        catch (Exception e)
         {
-            foreach (var playerState in playerList)
-            {
-                var playerInfo = new PlayerInfo
-                {
-                    Id = playerState.Id,
-                    Name = playerState.Name,
-                    Level = playerState.Level,
-                    State = playerState.State,
-                    Avatar = playerState.Avatar,
-                };
-                respPlayerList.PlayerList.Add(playerInfo);
-            }
+            LogHelper.Error($"[ReqPlayerList] request failed. exception={e}");
+            throw;
         }
-
-        return respPlayerList;
     }
 
     private async Task<List<PlayerState>> GetPlayerList(ReqPlayerList reqPlayerList)
     {
+        LogHelper.Info($"[ReqPlayerList] query mongo. accountId={reqPlayerList.Id}");
         MetricsPlayerHelper.GetPlayerListCounterOptions.Inc();
-        return await GameDb.FindListAsync<PlayerState>(m => m.AccountId == reqPlayerList.Id);
+        var result = await GameDb.FindListAsync<PlayerState>(m => m.AccountId == reqPlayerList.Id);
+        LogHelper.Info($"[ReqPlayerList] query mongo done. accountId={reqPlayerList.Id}, count={result?.Count ?? 0}");
+        return result;
     }
 }

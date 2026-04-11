@@ -1,9 +1,9 @@
 using System;
 
 using Cysharp.Threading.Tasks;
+using GameFrameX.Event.Runtime;
 using GameFrameX.Network.Runtime;
 using GameFrameX.Runtime;
-using GameFrameX.Event.Runtime;
 using Hotfix.Manager;
 using Hotfix.Proto;
 using UnityEngine;
@@ -56,21 +56,11 @@ namespace Hotfix.Network
                 return LoginResult.FromError($"invalid playerId={playerInfo.Id}");
             }
 
-            var channel = GetOrCreateChannel();
+            var channel = await EnsureConnectedChannelAsync(connectTimeoutSeconds);
             if (channel == null)
             {
                 Log.Error("LoginAsync failed: network channel is null.");
                 return LoginResult.FromError("network channel is null");
-            }
-
-            if (!channel.Connected)
-            {
-                var connected = await WaitForConnectedAsync(channel, connectTimeoutSeconds);
-                if (!connected)
-                {
-                    Log.Error($"LoginAsync failed: connect timeout ({connectTimeoutSeconds}s).");
-                    return LoginResult.FromError($"connect timeout ({connectTimeoutSeconds}s)");
-                }
             }
 
             await UniTask.Yield();
@@ -78,7 +68,6 @@ namespace Hotfix.Network
             var userName = string.IsNullOrWhiteSpace(steamId) ? playerInfo.Id.ToString() : steamId;
             var requests = new System.Collections.Generic.List<(string tag, ReqPlayerLogin req)>();
 
-            // Steam ticket with playerId.
             if (!string.IsNullOrWhiteSpace(sdkToken))
             {
                 requests.Add(("steam_player", new ReqPlayerLogin
@@ -109,7 +98,6 @@ namespace Hotfix.Network
                 }
             }
 
-            // Fallback token (usually from HTTP login).
             if (!string.IsNullOrWhiteSpace(fallbackSdkToken))
             {
                 if (accountId > 0)
@@ -140,7 +128,6 @@ namespace Hotfix.Network
                 }));
             }
 
-            // Legacy payload (original UIPlayerList path).
             requests.Add(("legacy", new ReqPlayerLogin
             {
                 UserName = playerInfo.Id.ToString()
@@ -157,7 +144,6 @@ namespace Hotfix.Network
                     return result;
                 }
 
-                // If server responded with an error code, stop and surface it.
                 if (result.Response != null)
                 {
                     return result;
@@ -175,21 +161,11 @@ namespace Hotfix.Network
                 return null;
             }
 
-            var channel = GetOrCreateChannel();
+            var channel = await EnsureConnectedChannelAsync(connectTimeoutSeconds);
             if (channel == null)
             {
                 Log.Error("LoginAccountAsync failed: network channel is null.");
                 return null;
-            }
-
-            if (!channel.Connected)
-            {
-                var connected = await WaitForConnectedAsync(channel, connectTimeoutSeconds);
-                if (!connected)
-                {
-                    Log.Error($"LoginAccountAsync failed: connect timeout ({connectTimeoutSeconds}s).");
-                    return null;
-                }
             }
 
             await UniTask.Yield();
@@ -229,7 +205,7 @@ namespace Hotfix.Network
             }
         }
 
-        private static INetworkChannel GetOrCreateChannel()
+        private static async UniTask<INetworkChannel> EnsureConnectedChannelAsync(float connectTimeoutSeconds)
         {
             EnsureEventSubscribed();
 
@@ -238,21 +214,35 @@ namespace Hotfix.Network
                 return _sNetworkChannel;
             }
 
-            if (GameApp.Network.HasNetworkChannel(ChannelName))
+            foreach (var tcpUrl in GameApiUrl.BuildGameTcpUrls())
             {
-                _sNetworkChannel = GameApp.Network.GetNetworkChannel(ChannelName);
+                var channel = CreateFreshChannel();
+                Log.Info($"Connect game server: {tcpUrl}");
+                channel.Connect(new Uri(tcpUrl));
+
+                var connected = await WaitForConnectedAsync(channel, connectTimeoutSeconds);
+                if (connected)
+                {
+                    _sNetworkChannel = channel;
+                    return _sNetworkChannel;
+                }
+
+                Log.Warning($"Connect game server timeout: {tcpUrl}");
+                DestroyCurrentChannel();
             }
 
+            Log.Error($"Login connection failed: all candidate endpoints timed out. primary={GameApiUrl.BuildGameTcpUrl()}");
+            return null;
+        }
+
+        private static INetworkChannel CreateFreshChannel()
+        {
             if (_sNetworkChannel != null && _sNetworkChannel.Connected)
             {
                 return _sNetworkChannel;
             }
 
-            if (_sNetworkChannel != null && GameApp.Network.HasNetworkChannel(ChannelName) && !_sNetworkChannel.Connected)
-            {
-                GameApp.Network.DestroyNetworkChannel(ChannelName);
-                _sNetworkChannel = null;
-            }
+            DestroyCurrentChannel();
 
             _sNetworkChannel = GameApp.Network.CreateNetworkChannel(ChannelName, new DefaultNetworkChannelHelper());
             _sNetworkChannel.RegisterHeartBeatHandler(new DefaultPacketHeartBeatHandler());
@@ -260,12 +250,17 @@ namespace Hotfix.Network
             _sNetworkChannel.SetRPCEndHandler(OnRpcEnd);
             _sNetworkChannel.SetRPCErrorHandler(OnRpcTimeoutOrError);
             _sNetworkChannel.SetRPCErrorCodeHandler(OnRpcErrorCode);
-
-            var tcpUrl = GameApiUrl.BuildGameTcpUrl();
-            Log.Info($"Connect game server: {tcpUrl}");
-            _sNetworkChannel.Connect(new Uri(tcpUrl));
-
             return _sNetworkChannel;
+        }
+
+        private static void DestroyCurrentChannel()
+        {
+            if (GameApp.Network.HasNetworkChannel(ChannelName))
+            {
+                GameApp.Network.DestroyNetworkChannel(ChannelName);
+            }
+
+            _sNetworkChannel = null;
         }
 
         private static async UniTask<bool> WaitForConnectedAsync(INetworkChannel channel, float timeoutSeconds)

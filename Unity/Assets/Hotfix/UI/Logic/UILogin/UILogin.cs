@@ -260,13 +260,17 @@ namespace Hotfix.UI
                     return;
                 }
 
-                AccountManager.Instance.PlayerList = respPlayerList.PlayerList;
+                var playerList = respPlayerList.PlayerList ?? new List<PlayerInfo>();
+                var singlePlayerList = playerList.Count > 0
+                    ? new List<PlayerInfo> { playerList[0] }
+                    : new List<PlayerInfo>();
+                AccountManager.Instance.PlayerList = singlePlayerList;
 
                 #endregion
 
-                if (respPlayerList.PlayerList.Count > 0)
+                if (singlePlayerList.Count > 0)
                 {
-                    var autoPlayer = respPlayerList.PlayerList[0];
+                    var autoPlayer = singlePlayerList[0];
                     m_ErrorText.text = "正在进入游戏...";
                     Log.Error($"[TRACE] UILogin.Login -> call LoginAsync, autoPlayerId={autoPlayer.Id}, accountId={respLogin.Id}");
 
@@ -291,6 +295,7 @@ namespace Hotfix.UI
                     return;
                 }
 
+                m_ErrorText.text = "未找到角色，正在创建角色...";
                 await GameApp.UI.OpenFullScreenAsync<UIPlayerCreate>(
                     Utility.Asset.Path.GetUIPath(nameof(UILogin)),
                     new LoginFlowData { IsOfflineMode = false, RespLogin = respLogin, SteamId = _steamId, SdkToken = _steamTicket });

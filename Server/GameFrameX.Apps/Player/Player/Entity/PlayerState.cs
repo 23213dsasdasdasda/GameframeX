@@ -41,11 +41,6 @@ public sealed class PlayerState : CacheState
     public string RoleName { get; set; }
 
     /// <summary>
-    /// 创建时间 (CreateTime)
-    /// </summary>
-    public new long CreateTime { get; set; }
-    
-    /// <summary>
     /// 账号ID
     /// </summary>
     public long AccountId { get; set; }

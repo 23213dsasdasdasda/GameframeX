@@ -26,6 +26,10 @@
         <None Update="Configs\app_log.config">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Include="..\Configs\app_config.json">
+            <Link>app_config.json</Link>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
