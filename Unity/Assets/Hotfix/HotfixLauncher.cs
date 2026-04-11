@@ -59,6 +59,7 @@ namespace Hotfix
             Log.Info("Hello World HybridCLR");
             ProtoMessageIdHandler.Init(HotfixProtoHandler.CurrentAssembly);
             _ = MatchManager.Instance;
+            ChineseChessBattleRuntime.Install();
             LoadConfig();
             LoadUI();
         }

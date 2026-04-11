@@ -28,6 +28,16 @@
 //  官方文档：https://gameframex.doc.alianblank.com/
 //  Official Documentation: https://gameframex.doc.alianblank.com/
 // ==========================================================================================
+using GameFrameX.Apps.Common.Session;
+using GameFrameX.Apps.Player.Player.Entity;
+using GameFrameX.Apps.Server.Component;
+using GameFrameX.Apps.Server.Entity;
+using GameFrameX.Core.Abstractions.Attribute;
+using GameFrameX.Core.Abstractions.Events;
+using GameFrameX.Core.Timer.Handler;
+using GameFrameX.Foundation.Utility;
+using GameFrameX.Hotfix.Logic.Player.Login;
+
 namespace GameFrameX.Hotfix.Logic.Server;
 
 public class ServerComponentAgent : StateComponentAgent<ServerComponent, ServerState>
@@ -167,6 +177,19 @@ public class ServerComponentAgent : StateComponentAgent<ServerComponent, ServerS
 
         response.IsMatching = true;
         response.QueueCount = OwnerComponent.MatchQueue.Count;
+        if (ShouldUseDebugBotMatch(playerId))
+        {
+            var botRoom = await CreateDebugBotRoomAsync(playerId);
+            if (botRoom != null)
+            {
+                response.RoomId = botRoom.RoomId;
+                response.IsMatching = false;
+                response.QueueCount = OwnerComponent.MatchQueue.Count;
+                await NotifyMatchSuccessAsync(botRoom);
+                return response;
+            }
+        }
+
         await TryMatchAsync();
         if (OwnerComponent.PlayerRoomMap.TryGetValue(playerId, out var matchedRoomId))
         {
@@ -184,6 +207,71 @@ public class ServerComponentAgent : StateComponentAgent<ServerComponent, ServerS
         response.IsCancelled = OwnerComponent.MatchQueue.Remove(playerId);
         response.QueueCount = OwnerComponent.MatchQueue.Count;
         return Task.FromResult(response);
+    }
+
+    [Service]
+    public virtual Task<RespMatchInfo> GetMatchInfo(long playerId)
+    {
+        var response = new RespMatchInfo
+        {
+            IsMatching = OwnerComponent.MatchQueue.Contains(playerId),
+            QueueCount = OwnerComponent.MatchQueue.Count
+        };
+
+        if (!OwnerComponent.PlayerRoomMap.TryGetValue(playerId, out var roomId))
+        {
+            return Task.FromResult(response);
+        }
+
+        if (!OwnerComponent.MatchRoomMap.TryGetValue(roomId, out var room))
+        {
+            OwnerComponent.PlayerRoomMap.Remove(playerId);
+            return Task.FromResult(response);
+        }
+
+        response.RoomId = room.RoomId;
+        response.PlayerList = BuildMatchRoomPlayerInfoList(room);
+        var player = room.PlayerList.FirstOrDefault(m => m.PlayerId == playerId);
+        response.IsReady = player?.IsReady ?? false;
+        response.IsMatching = false;
+        return Task.FromResult(response);
+    }
+
+    [Service]
+    public virtual async Task<RespMatchRoomLeave> LeaveRoom(long playerId)
+    {
+        var response = new RespMatchRoomLeave();
+        if (OwnerComponent.MatchQueue.Remove(playerId))
+        {
+            response.IsLeft = true;
+        }
+
+        if (!OwnerComponent.PlayerRoomMap.TryGetValue(playerId, out var roomId))
+        {
+            response.QueueCount = OwnerComponent.MatchQueue.Count;
+            return response;
+        }
+
+        OwnerComponent.PlayerRoomMap.Remove(playerId);
+        if (!OwnerComponent.MatchRoomMap.TryGetValue(roomId, out var room))
+        {
+            response.IsLeft = true;
+            response.QueueCount = OwnerComponent.MatchQueue.Count;
+            return response;
+        }
+
+        OwnerComponent.MatchRoomMap.Remove(roomId);
+        room.PlayerList.RemoveAll(m => m.PlayerId == playerId);
+        foreach (var player in room.PlayerList)
+        {
+            OwnerComponent.PlayerRoomMap.Remove(player.PlayerId);
+            player.IsReady = false;
+        }
+
+        response.IsLeft = true;
+        response.QueueCount = OwnerComponent.MatchQueue.Count;
+        await NotifyRoomDismissedAsync(room);
+        return response;
     }
 
     [Service]
@@ -217,6 +305,11 @@ public class ServerComponentAgent : StateComponentAgent<ServerComponent, ServerS
         response.RoomId = room.RoomId;
         response.PlayerList = BuildMatchRoomPlayerInfoList(room);
         _ = NotifyMatchRoomChangedAsync(room);
+        if (room.PlayerList.Count >= 2 && room.PlayerList.All(m => m.IsReady))
+        {
+            _ = NotifyMatchGameStartAsync(room);
+        }
+
         return Task.FromResult(response);
     }
 
@@ -321,6 +414,35 @@ public class ServerComponentAgent : StateComponentAgent<ServerComponent, ServerS
         return 0;
     }
 
+    private async Task<MatchRoomRuntime> CreateDebugBotRoomAsync(long playerId)
+    {
+        if (!OwnerComponent.MatchQueue.Remove(playerId))
+        {
+            return null;
+        }
+
+        var player = await LoadMatchPlayerAsync(playerId);
+        if (player == null)
+        {
+            return null;
+        }
+
+        var room = new MatchRoomRuntime
+        {
+            RoomId = ActorIdGenerator.GetUniqueId(),
+            CreateTime = TimerHelper.UnixTimeSeconds(),
+            PlayerList = new List<MatchRoomPlayerRuntime>
+            {
+                player,
+                CreateDebugBotPlayer()
+            }
+        };
+
+        OwnerComponent.MatchRoomMap[room.RoomId] = room;
+        OwnerComponent.PlayerRoomMap[playerId] = room.RoomId;
+        return room;
+    }
+
     private async Task<MatchRoomRuntime> CreateRoomAsync(long playerId1, long playerId2)
     {
         var player1 = await LoadMatchPlayerAsync(playerId1);
@@ -361,6 +483,37 @@ public class ServerComponentAgent : StateComponentAgent<ServerComponent, ServerS
         };
     }
 
+    private static MatchRoomPlayerRuntime CreateDebugBotPlayer()
+    {
+        return new MatchRoomPlayerRuntime
+        {
+            PlayerId = -1,
+            Name = "Training Bot",
+            Level = 1,
+            Avatar = 1,
+            IsReady = true
+        };
+    }
+
+    private static bool ShouldUseDebugBotMatch(long playerId)
+    {
+        if (playerId <= 0)
+        {
+            return false;
+        }
+
+        var matchDebugBot = Environment.GetEnvironmentVariable("MATCH_DEBUG_BOT");
+        if (string.Equals(matchDebugBot, "1", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(matchDebugBot, "true", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        var isDebug = Environment.GetEnvironmentVariable("IsDebug");
+        return string.Equals(isDebug, "1", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(isDebug, "true", StringComparison.OrdinalIgnoreCase);
+    }
+
     private static async Task NotifyMatchSuccessAsync(MatchRoomRuntime room)
     {
         var notify = new NotifyMatchSuccess
@@ -395,6 +548,58 @@ public class ServerComponentAgent : StateComponentAgent<ServerComponent, ServerS
                 await session.WriteAsync(notify);
             }
         }
+    }
+
+    private static async Task NotifyRoomDismissedAsync(MatchRoomRuntime room)
+    {
+        var notify = new NotifyMatchRoomChanged
+        {
+            RoomId = 0,
+            PlayerList = new List<MatchRoomPlayerInfo>()
+        };
+
+        foreach (var player in room.PlayerList)
+        {
+            var session = SessionManager.GetByRoleId(player.PlayerId);
+            if (session != null)
+            {
+                await session.WriteAsync(notify);
+            }
+        }
+    }
+
+    private static async Task NotifyMatchGameStartAsync(MatchRoomRuntime room)
+    {
+        var playerList = BuildMatchRoomPlayerInfoList(room);
+        for (var i = 0; i < room.PlayerList.Count; i++)
+        {
+            var player = room.PlayerList[i];
+            if (player.PlayerId <= 0)
+            {
+                continue;
+            }
+
+            var notify = new NotifyMatchGameStart
+            {
+                RoomId = room.RoomId,
+                SceneName = GetMatchSceneName(),
+                SeatIndex = i,
+                Camp = i == 0 ? 1 : 2,
+                PlayerList = playerList
+            };
+
+            var session = SessionManager.GetByRoleId(player.PlayerId);
+            if (session != null)
+            {
+                await session.WriteAsync(notify);
+            }
+        }
+    }
+
+    private static string GetMatchSceneName()
+    {
+        var sceneName = Environment.GetEnvironmentVariable("MATCH_GAME_SCENE");
+        return string.IsNullOrWhiteSpace(sceneName) ? "ChineseChess" : sceneName;
     }
 
     private static List<MatchRoomPlayerInfo> BuildMatchRoomPlayerInfoList(MatchRoomRuntime room)

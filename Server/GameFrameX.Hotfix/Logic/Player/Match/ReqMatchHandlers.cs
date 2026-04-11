@@ -64,3 +64,25 @@ internal sealed class ReqMatchRoomReadyHandler : PlayerRpcComponentHandler<Playe
         return ComponentAgent.OnMatchRoomReady(request, response);
     }
 }
+
+[MessageMapping(typeof(ReqMatchInfo))]
+internal sealed class ReqMatchInfoHandler : PlayerRpcComponentHandler<PlayerComponentAgent, ReqMatchInfo, RespMatchInfo>
+{
+    protected override Task ActionAsync(ReqMatchInfo request, RespMatchInfo response)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(response);
+        return ComponentAgent.OnMatchInfo(response);
+    }
+}
+
+[MessageMapping(typeof(ReqMatchRoomLeave))]
+internal sealed class ReqMatchRoomLeaveHandler : PlayerRpcComponentHandler<PlayerComponentAgent, ReqMatchRoomLeave, RespMatchRoomLeave>
+{
+    protected override Task ActionAsync(ReqMatchRoomLeave request, RespMatchRoomLeave response)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(response);
+        return ComponentAgent.OnMatchRoomLeave(response);
+    }
+}

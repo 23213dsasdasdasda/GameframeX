@@ -822,4 +822,105 @@ namespace Hotfix.Proto
 		}
 	}
 
+	[ProtoContract]
+	[MessageTypeHandler(((300) << 16) + 31)]
+	public sealed class ReqMatchInfo : MessageObject, IRequestMessage
+	{
+		public override void Clear()
+		{
+		}
+	}
+
+	[ProtoContract]
+	[MessageTypeHandler(((300) << 16) + 32)]
+	public sealed class RespMatchInfo : MessageObject, IResponseMessage
+	{
+		[ProtoMember(1)]
+		public bool IsMatching { get; set; }
+
+		[ProtoMember(2)]
+		public int QueueCount { get; set; }
+
+		[ProtoMember(3)]
+		public long RoomId { get; set; }
+
+		[ProtoMember(4)]
+		public bool IsReady { get; set; }
+
+		[ProtoMember(5)]
+		public List<MatchRoomPlayerInfo> PlayerList { get; set; } = new List<MatchRoomPlayerInfo>();
+
+		[ProtoMember(2047)]
+		public int ErrorCode { get; set; }
+
+		public override void Clear()
+		{
+			IsMatching = default;
+			QueueCount = default;
+			RoomId = default;
+			IsReady = default;
+			PlayerList.Clear();
+			ErrorCode = default;
+		}
+	}
+
+	[ProtoContract]
+	[MessageTypeHandler(((300) << 16) + 33)]
+	public sealed class ReqMatchRoomLeave : MessageObject, IRequestMessage
+	{
+		public override void Clear()
+		{
+		}
+	}
+
+	[ProtoContract]
+	[MessageTypeHandler(((300) << 16) + 34)]
+	public sealed class RespMatchRoomLeave : MessageObject, IResponseMessage
+	{
+		[ProtoMember(1)]
+		public bool IsLeft { get; set; }
+
+		[ProtoMember(2)]
+		public int QueueCount { get; set; }
+
+		[ProtoMember(2047)]
+		public int ErrorCode { get; set; }
+
+		public override void Clear()
+		{
+			IsLeft = default;
+			QueueCount = default;
+			ErrorCode = default;
+		}
+	}
+
+	[ProtoContract]
+	[MessageTypeHandler(((300) << 16) + 35)]
+	public sealed class NotifyMatchGameStart : MessageObject, INotifyMessage
+	{
+		[ProtoMember(1)]
+		public long RoomId { get; set; }
+
+		[ProtoMember(2)]
+		public string SceneName { get; set; }
+
+		[ProtoMember(3)]
+		public int SeatIndex { get; set; }
+
+		[ProtoMember(4)]
+		public int Camp { get; set; }
+
+		[ProtoMember(5)]
+		public List<MatchRoomPlayerInfo> PlayerList { get; set; } = new List<MatchRoomPlayerInfo>();
+
+		public override void Clear()
+		{
+			RoomId = default;
+			SceneName = default;
+			SeatIndex = default;
+			Camp = default;
+			PlayerList.Clear();
+		}
+	}
+
 }

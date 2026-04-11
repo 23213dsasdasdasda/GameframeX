@@ -14,5 +14,8 @@
     <Group GroupActiveRule="EnableGroup" GroupName="Config" GroupDesc="" AssetTags="">
       <Collector CollectPath="Assets/Bundles/Config" CollectGUID="60dcdcc847843ba45a0aec7d153dd540" CollectType="MainAssetCollector" AddressRule="AddressByFileName" PackRule="PackDirectory" FilterRule="CollectAll" UserData="" AssetTags="" />
     </Group>
+    <Group GroupActiveRule="EnableGroup" GroupName="Scenes" GroupDesc="" AssetTags="">
+      <Collector CollectPath="Assets/Bundles/Scenes" CollectGUID="8b8e16c0a3d14e84b9bca8fdf68a421d" CollectType="MainAssetCollector" AddressRule="AddressByFileName" PackRule="PackDirectory" FilterRule="CollectAll" UserData="" AssetTags="" />
+    </Group>
   </Package>
 </root>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="1920,1080">
   <displayList>
-    <loader id="n4_ob7a" name="bg" xy="-1,-2" size="1920,1080" url="ui://q9u97yzfo1ao3" align="center" vAlign="middle" fill="scale">
+    <loader id="n4_ob7a" name="bg" xy="1,0" size="1920,1080" url="ui://q9u97yzfo1ao3" align="center" vAlign="middle" fill="scale">
       <relation target="" sidePair="center-center,middle-middle"/>
       <relation target="n22_o1ao" sidePair=""/>
       <relation target="n13_o1ao" sidePair=""/>
       <relation target="n14_o1ao" sidePair=""/>
     </loader>
-    <component id="n0_xws7" name="bag_button" src="xws71" fileName="BagButton.xml" xy="1713,723" size="119,100">
+    <component id="n0_xws7" name="bag_button" src="xws71" fileName="BagButton.xml" xy="1602,716" size="331,100">
       <Button title="背包"/>
     </component>
-    <loader id="n1_ob7a" name="player_icon" xy="44,910" size="117,130" align="center" vAlign="middle" fill="scale"/>
+    <loader id="n1_ob7a" name="player_icon" xy="44,915" size="117,130" align="center" vAlign="middle" fill="scale"/>
     <text id="n2_ob7a" name="player_name" xy="176,907" size="253,42" fontSize="30" autoSize="none" text=""/>
     <text id="n3_ob7a" name="player_level" xy="175,950" size="285,44" fontSize="30" autoSize="none" text=""/>
     <component id="n5_lmmi" name="user_info_button" src="xws71" fileName="BagButton.xml" xy="1601,582" size="265,100">

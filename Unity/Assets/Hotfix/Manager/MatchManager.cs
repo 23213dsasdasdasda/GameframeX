@@ -30,9 +30,9 @@
 // ==========================================================================================
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Hotfix.Events;
 using GameFrameX.Network.Runtime;
 using GameFrameX.Runtime;
+using Hotfix.Events;
 using Hotfix.Proto;
 
 namespace Hotfix.Manager
@@ -52,12 +52,16 @@ namespace Hotfix.Manager
 
         public bool IsReady { get; private set; }
 
+        public string CurrentGameScene { get; private set; }
+
+        public int CurrentSeatIndex { get; private set; } = -1;
+
+        public int CurrentCamp { get; private set; }
+
         [MessageHandler(typeof(NotifyMatchSuccess), nameof(NotifyMatchSuccessHandler))]
         private void NotifyMatchSuccessHandler(NotifyMatchSuccess message)
         {
-            CurrentRoomId = message.RoomId;
-            CurrentRoomPlayers = message.PlayerList ?? new List<MatchRoomPlayerInfo>();
-            IsMatching = false;
+            ApplyState(false, message.RoomId, message.PlayerList, false);
             UpdateReadyState();
             Log.Info($"match success, roomId={CurrentRoomId}, playerCount={CurrentRoomPlayers.Count}");
             FireMatchChangedEvent();
@@ -66,10 +70,25 @@ namespace Hotfix.Manager
         [MessageHandler(typeof(NotifyMatchRoomChanged), nameof(NotifyMatchRoomChangedHandler))]
         private void NotifyMatchRoomChangedHandler(NotifyMatchRoomChanged message)
         {
-            CurrentRoomId = message.RoomId;
-            CurrentRoomPlayers = message.PlayerList ?? new List<MatchRoomPlayerInfo>();
+            ApplyState(false, message.RoomId, message.PlayerList, false);
             UpdateReadyState();
             FireMatchChangedEvent();
+        }
+
+        [MessageHandler(typeof(NotifyMatchGameStart), nameof(NotifyMatchGameStartHandler))]
+        private void NotifyMatchGameStartHandler(NotifyMatchGameStart message)
+        {
+            CurrentGameScene = message.SceneName;
+            CurrentRoomId = message.RoomId;
+            CurrentSeatIndex = message.SeatIndex;
+            CurrentCamp = message.Camp;
+            CurrentRoomPlayers = message.PlayerList ?? new List<MatchRoomPlayerInfo>();
+            MatchBattleContext.Apply(message);
+            FireMatchChangedEvent();
+            if (!string.IsNullOrWhiteSpace(message.SceneName))
+            {
+                EnterMatchSceneAsync(message.SceneName).Forget();
+            }
         }
 
         public async UniTask<RespMatchStart> RequestStartMatch()
@@ -86,6 +105,18 @@ namespace Hotfix.Manager
             return response;
         }
 
+        public async UniTask<RespMatchInfo> RequestMatchInfo()
+        {
+            var response = await GameApp.Network.GetNetworkChannel("network").Call<RespMatchInfo>(new ReqMatchInfo());
+            if (response != null && response.ErrorCode == 0)
+            {
+                ApplyState(response.IsMatching, response.RoomId, response.PlayerList, response.IsReady);
+            }
+
+            FireMatchChangedEvent();
+            return response;
+        }
+
         public async UniTask<RespMatchCancel> RequestCancelMatch()
         {
             var response = await GameApp.Network.GetNetworkChannel("network").Call<RespMatchCancel>(new ReqMatchCancel());
@@ -96,6 +127,18 @@ namespace Hotfix.Manager
 
             FireMatchChangedEvent();
 
+            return response;
+        }
+
+        public async UniTask<RespMatchRoomLeave> RequestLeaveRoom()
+        {
+            var response = await GameApp.Network.GetNetworkChannel("network").Call<RespMatchRoomLeave>(new ReqMatchRoomLeave());
+            if (response != null && response.ErrorCode == 0 && response.IsLeft)
+            {
+                ResetRoomState();
+            }
+
+            FireMatchChangedEvent();
             return response;
         }
 
@@ -141,9 +184,42 @@ namespace Hotfix.Manager
             }
         }
 
+        private void ApplyState(bool isMatching, long roomId, List<MatchRoomPlayerInfo> playerList, bool isReady)
+        {
+            IsMatching = isMatching;
+            CurrentRoomId = roomId;
+            CurrentRoomPlayers = playerList ?? new List<MatchRoomPlayerInfo>();
+            IsReady = isReady;
+            if (CurrentRoomId <= 0)
+            {
+                CurrentRoomPlayers = new List<MatchRoomPlayerInfo>();
+            }
+        }
+
+        private void ResetRoomState()
+        {
+            IsMatching = false;
+            CurrentRoomId = 0;
+            CurrentRoomPlayers = new List<MatchRoomPlayerInfo>();
+            IsReady = false;
+            CurrentGameScene = null;
+            CurrentSeatIndex = -1;
+            CurrentCamp = 0;
+            MatchBattleContext.Clear();
+        }
+
         private void FireMatchChangedEvent()
         {
             GameApp.Event.Fire(this, MatchChangedEventArgs.Create());
+        }
+
+        private static async UniTaskVoid EnterMatchSceneAsync(string sceneName)
+        {
+            var loadResult = await MatchGameSceneLoader.LoadAsync(sceneName);
+            if (!loadResult)
+            {
+                Log.Error($"enter match scene failed : {sceneName}");
+            }
         }
     }
 }

@@ -28,6 +28,8 @@
 //  官方文档：https://gameframex.doc.alianblank.com/
 //  Official Documentation: https://gameframex.doc.alianblank.com/
 // ==========================================================================================
+using GameFrameX.Apps.Player.Pet.Entity;
+
 namespace GameFrameX.Apps.Player.Pet.Component;
 
 [ComponentType(GlobalConst.ActorTypePlayer)]

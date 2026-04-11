@@ -843,5 +843,113 @@ namespace GameFrameX.Proto.Proto
 		}
 	}
 
+	[ProtoContract]
+	[System.ComponentModel.Description("请求查询匹配信息")]
+	[MessageTypeHandler(((300) << 16) + 31)]
+	public sealed class ReqMatchInfo : MessageObject, IRequestMessage
+	{
+		public override void Clear()
+		{
+		}
+	}
+
+	[ProtoContract]
+	[System.ComponentModel.Description("请求查询匹配信息返回")]
+	[MessageTypeHandler(((300) << 16) + 32)]
+	public sealed class RespMatchInfo : MessageObject, IResponseMessage
+	{
+		[ProtoMember(1)]
+		public bool IsMatching { get; set; }
+
+		[ProtoMember(2)]
+		public int QueueCount { get; set; }
+
+		[ProtoMember(3)]
+		public long RoomId { get; set; }
+
+		[ProtoMember(4)]
+		public bool IsReady { get; set; }
+
+		[ProtoMember(5)]
+		public List<MatchRoomPlayerInfo> PlayerList { get; set; } = new List<MatchRoomPlayerInfo>();
+
+		[ProtoMember(2047)]
+		[System.ComponentModel.Description("返回的错误码")]
+		public int ErrorCode { get; set; }
+
+		public override void Clear()
+		{
+			IsMatching = default;
+			QueueCount = default;
+			RoomId = default;
+			IsReady = default;
+			PlayerList.Clear();
+			ErrorCode = default;
+		}
+	}
+
+	[ProtoContract]
+	[System.ComponentModel.Description("请求离开房间")]
+	[MessageTypeHandler(((300) << 16) + 33)]
+	public sealed class ReqMatchRoomLeave : MessageObject, IRequestMessage
+	{
+		public override void Clear()
+		{
+		}
+	}
+
+	[ProtoContract]
+	[System.ComponentModel.Description("请求离开房间返回")]
+	[MessageTypeHandler(((300) << 16) + 34)]
+	public sealed class RespMatchRoomLeave : MessageObject, IResponseMessage
+	{
+		[ProtoMember(1)]
+		public bool IsLeft { get; set; }
+
+		[ProtoMember(2)]
+		public int QueueCount { get; set; }
+
+		[ProtoMember(2047)]
+		[System.ComponentModel.Description("返回的错误码")]
+		public int ErrorCode { get; set; }
+
+		public override void Clear()
+		{
+			IsLeft = default;
+			QueueCount = default;
+			ErrorCode = default;
+		}
+	}
+
+	[ProtoContract]
+	[System.ComponentModel.Description("通知开始对局")]
+	[MessageTypeHandler(((300) << 16) + 35)]
+	public sealed class NotifyMatchGameStart : MessageObject, INotifyMessage
+	{
+		[ProtoMember(1)]
+		public long RoomId { get; set; }
+
+		[ProtoMember(2)]
+		public string SceneName { get; set; }
+
+		[ProtoMember(3)]
+		public int SeatIndex { get; set; }
+
+		[ProtoMember(4)]
+		public int Camp { get; set; }
+
+		[ProtoMember(5)]
+		public List<MatchRoomPlayerInfo> PlayerList { get; set; } = new List<MatchRoomPlayerInfo>();
+
+		public override void Clear()
+		{
+			RoomId = default;
+			SceneName = default;
+			SeatIndex = default;
+			Camp = default;
+			PlayerList.Clear();
+		}
+	}
+
 }
 

@@ -949,7 +949,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   componentType: GameFrameX.Asset.Runtime.AssetManager
-  m_GamePlayMode: 0
+  m_GamePlayMode: 1
   m_assetResourcePackages: []
 --- !u!114 &1681186181
 MonoBehaviour:

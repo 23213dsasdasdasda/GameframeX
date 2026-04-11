@@ -1,22 +1,22 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 package User;
 option module = 300;
-// 请求账号登录
+// 璇锋眰璐﹀彿鐧诲綍
 message ReqLogin
 {
   int64  Id =1;
-  string Platform = 2;   // 平台标识 (steam, android, ios, windows)
-  int32 SdkType = 3;     // SDK 类型 (0: 官方, 1: Steam, 2: 微信...)
-  string SdkToken = 4;   // 登录凭证 (Steam Session Ticket)
-  string Device = 5;     // 设备唯一标识 (用于封禁或追踪)
-  string Password = 6;   // 密码 (非第三方登录时使用)
-  string DeviceModel = 7; // [补全] 设备型号 (如: RTX 4090, iPhone 15)
-  string Version = 8;    // [补全] 客户端版本号 (用于版本强制更新检查)
-string UserName = 9;   // 账号名 (SteamID / 手机号 / 自定义账号)
+  string Platform = 2;   // 骞冲彴鏍囪瘑 (steam, android, ios, windows)
+  int32 SdkType = 3;     // SDK 绫诲瀷 (0: 瀹樻柟, 1: Steam, 2: 寰俊...)
+  string SdkToken = 4;   // 鐧诲綍鍑瘉 (Steam Session Ticket)
+  string Device = 5;     // 璁惧鍞竴鏍囪瘑 (鐢ㄤ簬灏佺鎴栬拷韪?
+  string Password = 6;   // 瀵嗙爜 (闈炵涓夋柟鐧诲綍鏃朵娇鐢?
+  string DeviceModel = 7; // [琛ュ叏] 璁惧鍨嬪彿 (濡? RTX 4090, iPhone 15)
+  string Version = 8;    // [琛ュ叏] 瀹㈡埛绔増鏈彿 (鐢ㄤ簬鐗堟湰寮哄埗鏇存柊妫€鏌?
+string UserName = 9;   // 璐﹀彿鍚?(SteamID / 鎵嬫満鍙?/ 鑷畾涔夎处鍙?
 
 }
 
-// 请求账号登录返回
+// 璇锋眰璐﹀彿鐧诲綍杩斿洖
 message RespLogin
 {
   int64 Id = 1;        
@@ -28,77 +28,77 @@ int32 Code = 3;
   string ServerTime = 7; 
 }
 
-// 请求角色创建
+// 璇锋眰瑙掕壊鍒涘缓
 message ReqPlayerCreate
 {
-  int64 Id = 1; // 账号ID  
-  string Name = 2; // 角色名
+  int64 Id = 1; // 璐﹀彿ID  
+  string Name = 2; // 瑙掕壊鍚?
 }
 
-// 请求角色创建返回
+// 璇锋眰瑙掕壊鍒涘缓杩斿洖
 message RespPlayerCreate
 {
-   PlayerInfo PlayerInfo = 1; // 角色信息
+   PlayerInfo PlayerInfo = 1; // 瑙掕壊淇℃伅
 }
 
-// 请求角色列表
+// 璇锋眰瑙掕壊鍒楄〃
 message ReqPlayerList
 {
-  int64 Id = 1; // 账号ID
+  int64 Id = 1; // 璐﹀彿ID
 }
-// 请求角色列表返回
+// 璇锋眰瑙掕壊鍒楄〃杩斿洖
 message RespPlayerList
 {
-  repeated PlayerInfo PlayerList = 1; // 角色列表
+  repeated PlayerInfo PlayerList = 1; // 瑙掕壊鍒楄〃
 }
 
 message PlayerInfo
 {
-  int64 Id = 1; // 角色ID
-  string Name = 2; // 角色名
-  uint32 Level = 3; // 角色等级
-  int32 State = 4; // 角色状态
-  uint32 Avatar = 5; // 角色头像
-  uint64 CurrentExp = 6; // 角色当前经验
+  int64 Id = 1; // 瑙掕壊ID
+  string Name = 2; // 瑙掕壊鍚?
+  uint32 Level = 3; // 瑙掕壊绛夌骇
+  int32 State = 4; // 瑙掕壊鐘舵€?
+  uint32 Avatar = 5; // 瑙掕壊澶村儚
+  uint64 CurrentExp = 6; // 瑙掕壊褰撳墠缁忛獙
 }
 
 
-// 请求玩家登录
+// 璇锋眰鐜╁鐧诲綍
 message ReqPlayerLogin
 {
-  string UserName = 9;   // 账号名 (SteamID / 手机号 / 自定义账号)
-  string Platform = 2;   // 平台标识 (steam, android, ios, windows)
-  int32 SdkType = 3;     // SDK 类型 (0: 官方, 1: Steam, 2: 微信...)
-  string SdkToken = 4;   // 登录凭证 (Steam Session Ticket)
-  string Device = 5;     // 设备唯一标识 (用于封禁或追踪)
-  string Password = 6;   // 密码 (非第三方登录时使用)
-  string DeviceModel = 7; // [补全] 设备型号 (如: RTX 4090, iPhone 15)
-  string Version = 8;    // [补全] 客户端版本号 (用于版本强制更新检查)
+  string UserName = 9;   // 璐﹀彿鍚?(SteamID / 鎵嬫満鍙?/ 鑷畾涔夎处鍙?
+  string Platform = 2;   // 骞冲彴鏍囪瘑 (steam, android, ios, windows)
+  int32 SdkType = 3;     // SDK 绫诲瀷 (0: 瀹樻柟, 1: Steam, 2: 寰俊...)
+  string SdkToken = 4;   // 鐧诲綍鍑瘉 (Steam Session Ticket)
+  string Device = 5;     // 璁惧鍞竴鏍囪瘑 (鐢ㄤ簬灏佺鎴栬拷韪?
+  string Password = 6;   // 瀵嗙爜 (闈炵涓夋柟鐧诲綍鏃朵娇鐢?
+  string DeviceModel = 7; // [琛ュ叏] 璁惧鍨嬪彿 (濡? RTX 4090, iPhone 15)
+  string Version = 8;    // [琛ュ叏] 瀹㈡埛绔増鏈彿 (鐢ㄤ簬鐗堟湰寮哄埗鏇存柊妫€鏌?
   int64  Id =1;
 }
 
-// 请求玩家登录返回
+// 璇锋眰鐜╁鐧诲綍杩斿洖
 message RespPlayerLogin
 {
   int32 Code = 1;
-  int64 CreateTime = 2; // 创建时间  
-  PlayerInfo PlayerInfo = 3; // 角色信息
+  int64 CreateTime = 2; // 鍒涘缓鏃堕棿  
+  PlayerInfo PlayerInfo = 3; // 瑙掕壊淇℃伅
 }
 
-// 客户端每次请求都会回复错误码
+// 瀹㈡埛绔瘡娆¤姹傞兘浼氬洖澶嶉敊璇爜
 message RespErrorCode
 {
-  int64 ErrCode = 1; // 0:表示无错误
-  string Desc = 2; // 错误描述（不为0时有效）
+  int64 ErrCode = 1; // 0:琛ㄧず鏃犻敊璇?
+  string Desc = 2; // 閿欒鎻忚堪锛堜笉涓?鏃舵湁鏁堬級
 }
 
 message RespPrompt
 {
-  int32 Type = 1; // 提示信息类型（1Tip提示，2跑马灯，3插队跑马灯，4弹窗，5弹窗回到登陆，6弹窗退出游戏）
-  string Content = 2; // 提示内容
+  int32 Type = 1; // 鎻愮ず淇℃伅绫诲瀷锛?Tip鎻愮ず锛?璺戦┈鐏紝3鎻掗槦璺戦┈鐏紝4寮圭獥锛?寮圭獥鍥炲埌鐧婚檰锛?寮圭獥閫€鍑烘父鎴忥級
+  string Content = 2; // 鎻愮ず鍐呭
 }
 
-//请求玩家参数
+//璇锋眰鐜╁鍙傛暟
 message ReqPlayerInfo
 {
   int64 PlayerId = 1;
@@ -109,71 +109,104 @@ message RespPlayerInfo
   PlayerInfo PlayerInfo = 1;
 }
 
-//请求玩家宠物数据
+//璇锋眰鐜╁瀹犵墿鏁版嵁
 message ReqPlayerPet
 {
   int64 PlayerId = 1;
 }
 
-// 请求开始匹配
+// 璇锋眰寮€濮嬪尮閰?
 message ReqMatchStart
 {
 }
 
-// 请求开始匹配返回
+// 璇锋眰寮€濮嬪尮閰嶈繑鍥?
 message RespMatchStart
 {
-  bool IsMatching = 1; // 是否已进入匹配队列
-  int32 QueueCount = 2; // 当前匹配队列人数
-  int64 RoomId = 3; // 当前房间ID，未匹配成功时为0
+  bool IsMatching = 1; // 鏄惁宸茶繘鍏ュ尮閰嶉槦鍒?
+  int32 QueueCount = 2; // 褰撳墠鍖归厤闃熷垪浜烘暟
+  int64 RoomId = 3; // 褰撳墠鎴块棿ID锛屾湭鍖归厤鎴愬姛鏃朵负0
 }
 
-// 请求取消匹配
+// 璇锋眰鍙栨秷鍖归厤
 message ReqMatchCancel
 {
 }
 
-// 请求取消匹配返回
+// 璇锋眰鍙栨秷鍖归厤杩斿洖
 message RespMatchCancel
 {
-  bool IsCancelled = 1; // 是否取消成功
-  int32 QueueCount = 2; // 当前匹配队列人数
+  bool IsCancelled = 1; // 鏄惁鍙栨秷鎴愬姛
+  int32 QueueCount = 2; // 褰撳墠鍖归厤闃熷垪浜烘暟
 }
 
-// 房间玩家信息
+// 鎴块棿鐜╁淇℃伅
 message MatchRoomPlayerInfo
 {
-  int64 PlayerId = 1; // 玩家ID
-  string Name = 2; // 玩家名称
-  uint32 Level = 3; // 玩家等级
-  uint32 Avatar = 4; // 玩家头像
-  bool IsReady = 5; // 是否已准备
+  int64 PlayerId = 1; // 鐜╁ID
+  string Name = 2; // 鐜╁鍚嶇О
+  uint32 Level = 3; // 鐜╁绛夌骇
+  uint32 Avatar = 4; // 鐜╁澶村儚
+  bool IsReady = 5; // 鏄惁宸插噯澶?
 }
 
-// 匹配成功通知
+// 鍖归厤鎴愬姛閫氱煡
 message NotifyMatchSuccess
 {
-  int64 RoomId = 1; // 房间ID
-  repeated MatchRoomPlayerInfo PlayerList = 2; // 房间玩家列表
+  int64 RoomId = 1; // 鎴块棿ID
+  repeated MatchRoomPlayerInfo PlayerList = 2; // 鎴块棿鐜╁鍒楄〃
 }
 
-// 请求房间准备
+// 璇锋眰鎴块棿鍑嗗
 message ReqMatchRoomReady
 {
-  bool IsReady = 1; // 是否准备
+  bool IsReady = 1; // 鏄惁鍑嗗
 }
 
-// 请求房间准备返回
+// 璇锋眰鎴块棿鍑嗗杩斿洖
 message RespMatchRoomReady
 {
-  int64 RoomId = 1; // 房间ID
-  bool IsReady = 2; // 当前玩家是否准备
-  repeated MatchRoomPlayerInfo PlayerList = 3; // 房间玩家列表
+  int64 RoomId = 1; // 鎴块棿ID
+  bool IsReady = 2; // 褰撳墠鐜╁鏄惁鍑嗗
+  repeated MatchRoomPlayerInfo PlayerList = 3; // 鎴块棿鐜╁鍒楄〃
 }
 
-// 房间状态变更通知
+// 鎴块棿鐘舵€佸彉鏇撮€氱煡
 message NotifyMatchRoomChanged
 {
-  int64 RoomId = 1; // 房间ID
-  repeated MatchRoomPlayerInfo PlayerList = 2; // 房间玩家列表
+  int64 RoomId = 1; // 鎴块棿ID
+  repeated MatchRoomPlayerInfo PlayerList = 2; // 鎴块棿鐜╁鍒楄〃
 }
+
+message ReqMatchInfo
+{
+}
+
+message RespMatchInfo
+{
+  bool IsMatching = 1; // 鏄惁姝ｅ湪鍖归厤
+  int32 QueueCount = 2; // 褰撳墠闃熷垪浜烘暟
+  int64 RoomId = 3; // 褰撳墠鎴块棿ID
+  bool IsReady = 4; // 当前玩家是否已准备
+  repeated MatchRoomPlayerInfo PlayerList = 5; // 当前房间玩家列表
+}
+
+message ReqMatchRoomLeave
+{
+}
+
+message RespMatchRoomLeave
+{
+  bool IsLeft = 1; // 鏄惁宸茬寮€
+  int32 QueueCount = 2; // 褰撳墠闃熷垪浜烘暟
+}
+
+message NotifyMatchGameStart
+{
+  int64 RoomId = 1; // 房间ID
+  string SceneName = 2; // 要进入的场景名
+  int32 SeatIndex = 3; // 当前玩家座位号
+  int32 Camp = 4; // 当前玩家阵营
+  repeated MatchRoomPlayerInfo PlayerList = 5; // 对局玩家列表
+}
+

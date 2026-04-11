@@ -41,6 +41,7 @@ public class PlayerComponentAgent : StateComponentAgent<PlayerComponent, PlayerS
     {
         var serverComponent = await ActorManager.GetComponentAgent<ServerComponentAgent>();
         await serverComponent.CancelMatch(ActorId);
+        await serverComponent.LeaveRoom(ActorId);
         //移除在线玩家
         await serverComponent.RemoveOnlineRole(ActorId);
         //下线后会被自动回收
@@ -131,6 +132,29 @@ public class PlayerComponentAgent : StateComponentAgent<PlayerComponent, PlayerS
         response.IsReady = result.IsReady;
         response.ErrorCode = result.ErrorCode;
         response.PlayerList = result.PlayerList ?? new List<MatchRoomPlayerInfo>();
+    }
+
+    public async Task OnMatchInfo(RespMatchInfo response)
+    {
+        ArgumentNullException.ThrowIfNull(response);
+        var serverComp = await ActorManager.GetComponentAgent<ServerComponentAgent>();
+        var result = await serverComp.GetMatchInfo(ActorId);
+        response.IsMatching = result.IsMatching;
+        response.QueueCount = result.QueueCount;
+        response.RoomId = result.RoomId;
+        response.IsReady = result.IsReady;
+        response.ErrorCode = result.ErrorCode;
+        response.PlayerList = result.PlayerList ?? new List<MatchRoomPlayerInfo>();
+    }
+
+    public async Task OnMatchRoomLeave(RespMatchRoomLeave response)
+    {
+        ArgumentNullException.ThrowIfNull(response);
+        var serverComp = await ActorManager.GetComponentAgent<ServerComponentAgent>();
+        var result = await serverComp.LeaveRoom(ActorId);
+        response.IsLeft = result.IsLeft;
+        response.QueueCount = result.QueueCount;
+        response.ErrorCode = result.ErrorCode;
     }
 
     private static void CopyMatchStartResult(RespMatchStart source, RespMatchStart target)

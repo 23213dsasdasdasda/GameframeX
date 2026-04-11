@@ -28,6 +28,10 @@
 //  官方文档：https://gameframex.doc.alianblank.com/
 //  Official Documentation: https://gameframex.doc.alianblank.com/
 // ==========================================================================================
+using GameFrameX.Apps.Account.Login.Entity;
+using GameFrameX.Apps.Player.Player.Entity;
+using GameFrameX.Monitor.Player;
+
 namespace GameFrameX.Apps.Account.Login.Component;
 
 [ComponentType(GlobalConst.ActorTypeServer)]

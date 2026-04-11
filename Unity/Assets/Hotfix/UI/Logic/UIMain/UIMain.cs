@@ -28,7 +28,7 @@
 //  官方文档：https://gameframex.doc.alianblank.com/
 //  Official Documentation: https://gameframex.doc.alianblank.com/
 // ==========================================================================================
-﻿using System.Text;
+using System.Text;
 using Cysharp.Threading.Tasks;
 using GameFrameX.Runtime;
 using GameFrameX.UI.Runtime;
@@ -94,16 +94,25 @@ namespace Hotfix.UI
 #if ENABLE_UI_FAIRYGUI
             if (m_user_info_button != null)
             {
-                m_user_info_button.onClick.Set(OnMatchButtonClick);
+                m_user_info_button.onClick.Set(OnPrimaryMatchButtonClick);
             }
 
             if (m_not_rpc_button != null)
             {
-                m_not_rpc_button.onClick.Set(OnReadyButtonClick);
+                m_not_rpc_button.onClick.Set(OnSecondaryRoomButtonClick);
             }
 
             GameApp.Event.CheckSubscribe(MatchChangedEventArgs.EventId, OnMatchChanged);
 #endif
+
+            if (!AccountManager.Instance.IsOfflineMode)
+            {
+                var response = await MatchManager.Instance.RequestMatchInfo();
+                if (response == null || response.ErrorCode != 0)
+                {
+                    Log.Warning($"load match info failed, errorCode={response?.ErrorCode ?? -1}");
+                }
+            }
 
             RefreshMatchView();
         }
@@ -157,17 +166,17 @@ namespace Hotfix.UI
         }
 
 #if ENABLE_UI_FAIRYGUI
-        private void OnMatchButtonClick()
+        private void OnPrimaryMatchButtonClick()
         {
-            ToggleMatchAsync().Forget();
+            HandlePrimaryMatchActionAsync().Forget();
         }
 
-        private void OnReadyButtonClick()
+        private void OnSecondaryRoomButtonClick()
         {
-            ToggleRoomReadyAsync().Forget();
+            HandleSecondaryRoomActionAsync().Forget();
         }
 
-        private async UniTaskVoid ToggleMatchAsync()
+        private async UniTaskVoid HandlePrimaryMatchActionAsync()
         {
             if (AccountManager.Instance.IsOfflineMode)
             {
@@ -177,7 +186,12 @@ namespace Hotfix.UI
 
             if (MatchManager.Instance.CurrentRoomId > 0)
             {
-                Log.Info("already in a match room.");
+                var leaveResponse = await MatchManager.Instance.RequestLeaveRoom();
+                if (leaveResponse == null || leaveResponse.ErrorCode != 0)
+                {
+                    Log.Error($"leave room failed, errorCode={leaveResponse?.ErrorCode ?? -1}");
+                }
+
                 RefreshMatchView();
                 return;
             }
@@ -204,7 +218,7 @@ namespace Hotfix.UI
             RefreshMatchView();
         }
 
-        private async UniTaskVoid ToggleRoomReadyAsync()
+        private async UniTaskVoid HandleSecondaryRoomActionAsync()
         {
             if (AccountManager.Instance.IsOfflineMode)
             {
@@ -235,20 +249,24 @@ namespace Hotfix.UI
 #if ENABLE_UI_FAIRYGUI
             if (m_user_info_button != null)
             {
-                m_user_info_button.title = MatchManager.Instance.IsMatching ? "取消匹配" : "开始匹配";
+                m_user_info_button.title = MatchManager.Instance.CurrentRoomId > 0
+                    ? "离开房间"
+                    : (MatchManager.Instance.IsMatching ? "取消匹配" : "开始匹配");
             }
 
             if (m_not_rpc_button != null)
             {
                 m_not_rpc_button.title = MatchManager.Instance.CurrentRoomId > 0
                     ? (MatchManager.Instance.IsReady ? "取消准备" : "准备")
-                    : "未入房";
+                    : "等待入房";
             }
 
             if (m_player_rank != null)
             {
                 m_player_rank.text = MatchManager.Instance.CurrentRoomId > 0
-                    ? $"房间:{MatchManager.Instance.CurrentRoomId}"
+                    ? (string.IsNullOrWhiteSpace(MatchManager.Instance.CurrentGameScene)
+                        ? $"房间:{MatchManager.Instance.CurrentRoomId}"
+                        : $"开始对局:{MatchManager.Instance.CurrentGameScene} 阵营:{MatchManager.Instance.CurrentCamp} 座位:{MatchManager.Instance.CurrentSeatIndex}")
                     : (MatchManager.Instance.IsMatching ? "匹配中..." : "大厅中");
             }
 
