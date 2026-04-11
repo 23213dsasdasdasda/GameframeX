@@ -40,7 +40,6 @@ namespace Hotfix.UI
         public override void OnOpen(object userData)
         {
             base.OnOpen(userData);
-            Log.Error("[TRACE] UILogin.OnOpen -> StartSteamAutoLogin");
             ConfigureAutoLoginView();
             StartSteamAutoLogin().Forget();
         }
@@ -102,7 +101,6 @@ namespace Hotfix.UI
     
             try 
             {
-                Log.Error("[TRACE] StartSteamAutoLogin enter");
                 // --- 新增：起跑线等待逻辑 ---
                 // 这一步是核心！通过反射检查 AOT 层的 SteamManager 是否 Ready
                 float timeout = 3f; // 最多等3秒
@@ -111,15 +109,12 @@ namespace Hotfix.UI
                     await UniTask.Yield(); // 每一帧检查一次
                     timeout -= Time.deltaTime;
                 }
-                Log.Error($"[TRACE] CheckSteamManagerInitialized done, timeoutLeft={timeout:F2}");
 
                 // --- 修正：只调用一次，并获取结果 ---
                 var (ok, steamId, steamName) = await TryGetSteamLoginInfoWithRetryAsync();
-                Log.Error($"[TRACE] TryGetSteamLoginInfoWithRetryAsync => ok={ok}, steamId={(string.IsNullOrWhiteSpace(steamId) ? "<empty>" : steamId)}, steamName={steamName}");
         
                 if (!ok)
                 {
-                    Log.Error("[TRACE] StartSteamAutoLogin -> HandleOfflineMode (no steam login info)");
                     HandleOfflineMode();
                     return;
                 }
@@ -143,8 +138,7 @@ namespace Hotfix.UI
             }
             catch (System.Exception ex)
             {
-                UnityEngine.Debug.LogError($"Steam 自动登录过程崩溃: {ex}");
-                Log.Error($"[TRACE] StartSteamAutoLogin exception -> HandleOfflineMode, ex={ex.Message}");
+                Log.Error($"Steam 自动登录过程崩溃: {ex}");
                 HandleOfflineMode();
             }
         }
@@ -172,7 +166,6 @@ namespace Hotfix.UI
             }
             try
             {
-                Log.Error($"[TRACE] UILogin.Login enter, steamId={steamId}, steamName={steamName}");
                 #region 账号登录
 
                 var req = new ReqLogin
@@ -188,9 +181,7 @@ namespace Hotfix.UI
                 RespLogin respLogin;
                 try
                 {
-                    Log.Error($"[TRACE] UILogin.Login -> call LoginAccountAsync, reqUser={req.UserName}, sdkType={req.SdkType}");
                     respLogin = await GameServerLoginHelper.LoginAccountAsync(req);
-                    Log.Error($"[TRACE] UILogin.Login <- return LoginAccountAsync, respNull={respLogin == null}");
                 }
                 catch (Exception e)
                 {
@@ -212,7 +203,6 @@ namespace Hotfix.UI
                     m_ErrorText.text = $"登录失败，错误码:{respLogin.ErrorCode}";
                     return;
                 }
-                Log.Error($"[TRACE] UILogin.Login account login success, accountId={respLogin.Id}");
 
                 #endregion
 
@@ -272,7 +262,6 @@ namespace Hotfix.UI
                 {
                     var autoPlayer = singlePlayerList[0];
                     m_ErrorText.text = "正在进入游戏...";
-                    Log.Error($"[TRACE] UILogin.Login -> call LoginAsync, autoPlayerId={autoPlayer.Id}, accountId={respLogin.Id}");
 
                     var loginResult = await GameServerLoginHelper.LoginAsync(
                         autoPlayer,
@@ -280,7 +269,6 @@ namespace Hotfix.UI
                         _steamId,
                         _steamTicket,
                         respLogin.Token);
-                    Log.Error($"[TRACE] UILogin.Login <- return LoginAsync, success={loginResult.IsSuccess}, err={loginResult.Error}, errCode={loginResult.Response?.ErrorCode}");
 
                     if (!loginResult.IsSuccess)
                     {

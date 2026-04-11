@@ -1,4 +1,4 @@
-﻿Unity/.idea
+Unity/.idea
 Unity/Bundles
 Unity/Library
 Unity/obj
@@ -42,3 +42,4 @@ Proto2CSApp/bin
 [Ll]ogs/
 UserSettings/
 MemoryCaptures/
+Server/gameframex-server-latest.tar

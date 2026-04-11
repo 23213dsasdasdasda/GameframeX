@@ -32,6 +32,7 @@
 
 
 using GameFrameX.Apps.Player.Player.Entity;
+using GameFrameX.Apps.Account.Login.Component;
 using GameFrameX.DataBase;
 using GameFrameX.Monitor.Player;
 using GameFrameX.NetWork.Messages;
@@ -67,7 +68,7 @@ public sealed class ReqPlayerCreateHttpHandler : BaseHttpHandler
 
     private async Task<PlayerState> OnPlayerCreate(ReqPlayerCreate reqPlayerCreate)
     {
-        var existingPlayer = await GameDb.FindAsync<PlayerState>(m => m.AccountId == reqPlayerCreate.Id, false);
+        var existingPlayer = await SinglePlayerLoginPolicy.GetPrimaryPlayerByAccountIdAsync(reqPlayerCreate.Id);
         if (existingPlayer != null)
         {
             return existingPlayer;
@@ -77,6 +78,7 @@ public sealed class ReqPlayerCreateHttpHandler : BaseHttpHandler
         {
             Id = ActorIdGenerator.GetActorId(GlobalConst.ActorTypePlayer),
             AccountId = reqPlayerCreate.Id,
+            RoleName = reqPlayerCreate.Name,
             Name = reqPlayerCreate.Name,
             Level = (uint)Utility.RandomHelper.Next(1, 50),
             State = 0,

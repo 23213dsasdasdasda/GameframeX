@@ -33,6 +33,7 @@
 
 using GameFrameX.Apps.Player.Player.Entity;
 using GameFrameX.DataBase;
+using GameFrameX.Apps.Account.Login.Component;
 using GameFrameX.Monitor.Player;
 using GameFrameX.NetWork.Messages;
 
@@ -93,10 +94,11 @@ public sealed class ReqPlayerListHttpHandler : BaseHttpHandler
 
     private async Task<List<PlayerState>> GetPlayerList(ReqPlayerList reqPlayerList)
     {
-        LogHelper.Info($"[ReqPlayerList] query mongo. accountId={reqPlayerList.Id}");
+        LogHelper.Info($"[ReqPlayerList] query primary player. accountId={reqPlayerList.Id}");
         MetricsPlayerHelper.GetPlayerListCounterOptions.Inc();
-        var result = await GameDb.FindListAsync<PlayerState>(m => m.AccountId == reqPlayerList.Id);
-        LogHelper.Info($"[ReqPlayerList] query mongo done. accountId={reqPlayerList.Id}, count={result?.Count ?? 0}");
+        var playerState = await SinglePlayerLoginPolicy.GetPrimaryPlayerByAccountIdAsync(reqPlayerList.Id);
+        var result = SinglePlayerLoginPolicy.BuildSinglePlayerList(playerState);
+        LogHelper.Info($"[ReqPlayerList] query primary player done. accountId={reqPlayerList.Id}, count={result.Count}, playerId={playerState?.Id ?? 0}");
         return result;
     }
 }

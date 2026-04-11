@@ -64,10 +64,8 @@ namespace Hotfix.UI
 
         private void OnLoginButtonClick()
         {
-            Log.Error("[TRACE] UIPlayerList.OnLoginButtonClick");
             if (networkChannel != null && networkChannel.Connected)
             {
-                Log.Error("[TRACE] UIPlayerList reuse connected channel -> Login()");
                 Login();
                 return;
             }
@@ -83,7 +81,6 @@ namespace Hotfix.UI
             networkChannel.RegisterHeartBeatHandler(packetSendHeaderHandler);
             var tcpUrl = GameApiUrl.BuildGameTcpUrl();
             Log.Info($"Connect game server: {tcpUrl}");
-            Log.Error($"[TRACE] UIPlayerList connect tcpUrl={tcpUrl}");
             networkChannel.Connect(new Uri(tcpUrl));
             GameApp.Event.CheckSubscribe(NetworkConnectedEventArgs.EventId, OnNetworkConnected);
             GameApp.Event.CheckSubscribe(NetworkClosedEventArgs.EventId, OnNetworkClosed);
@@ -91,11 +88,9 @@ namespace Hotfix.UI
 
         private async void Login()
         {
-            Log.Error($"[TRACE] UIPlayerList.Login send ReqPlayerLogin, selectedId={m_SelectedPlayerInfo?.Id}");
             ReqPlayerLogin reqPlayerLogin = new ReqPlayerLogin();
             reqPlayerLogin.UserName = m_SelectedPlayerInfo.Id.ToString();
             var respPlayerLogin = await GameApp.Network.GetNetworkChannel("network").Call<RespPlayerLogin>(reqPlayerLogin);
-            Log.Error($"[TRACE] UIPlayerList.Login recv RespPlayerLogin, errorCode={respPlayerLogin?.ErrorCode}");
             PlayerManager.Instance.PlayerInfo = respPlayerLogin.PlayerInfo;
             await GameApp.UI.OpenFullScreenAsync<UIMain>(Utility.Asset.Path.GetUIPath(nameof(UIMain)), UIGroupConstants.Floor);
             GameApp.UI.CloseUIForm(this);
@@ -146,7 +141,6 @@ namespace Hotfix.UI
 
         private void OnNetworkConnected(object sender, GameEventArgs e)
         {
-            Log.Error("[TRACE] UIPlayerList.OnNetworkConnected -> Login()");
             Login();
             Log.Info(nameof(OnNetworkConnected));
         }

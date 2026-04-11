@@ -172,19 +172,12 @@ namespace Hotfix.Network
 
             try
             {
-                const int reqLoginMsgId = ((300 << 16) + 10);
-                Debug.LogError($"ReqLogin msgId={reqLoginMsgId} uniqueId={request.UniqueId} user={request.UserName}");
-                Log.Error($"[TRACE] ReqLogin send: {FormatReqLogin(request)}");
-
                 var respLogin = await channel.Call<RespLogin>(request);
-                Debug.LogError($"TCP receive type={respLogin?.GetType().FullName ?? "null"}");
                 if (respLogin == null)
                 {
                     Log.Error("LoginAccountAsync failed: respLogin is null.");
                     return null;
                 }
-
-                Log.Error($"[TRACE] RespLogin recv: {FormatRespLogin(respLogin)}");
 
                 if (respLogin.ErrorCode > 0)
                 {
@@ -279,8 +272,6 @@ namespace Hotfix.Network
         {
             try
             {
-                Log.Error($"[TRACE] ReqPlayerLogin send [{tag}]: {FormatReqPlayerLogin(request)}");
-
                 var respPlayerLogin = await channel.Call<RespPlayerLogin>(request);
 
                 if (respPlayerLogin == null)
@@ -288,8 +279,6 @@ namespace Hotfix.Network
                     Log.Error($"LoginAsync failed [{tag}]: respPlayerLogin is null.");
                     return LoginResult.FromError("respPlayerLogin is null");
                 }
-
-                Log.Error($"[TRACE] RespPlayerLogin recv [{tag}]: {FormatRespPlayerLogin(respPlayerLogin)}");
 
                 if (respPlayerLogin.ErrorCode > 0)
                 {
@@ -329,7 +318,7 @@ namespace Hotfix.Network
         {
             if (e is NetworkConnectedEventArgs ne && ne.NetworkChannel != null && ne.NetworkChannel.Name == ChannelName)
             {
-                Log.Error($"Network connected: {ne.NetworkChannel.Name}");
+                Log.Info($"Network connected: {ne.NetworkChannel.Name}");
             }
         }
 
@@ -351,23 +340,18 @@ namespace Hotfix.Network
 
         private static void OnRpcStart(object sender, MessageObject message)
         {
-            Debug.LogError($"RPC start type={message?.GetType().FullName ?? "null"} uniqueId={message?.UniqueId ?? 0}");
         }
 
         private static void OnRpcEnd(object sender, MessageObject message)
         {
-            Debug.LogError($"RPC end type={message?.GetType().FullName ?? "null"} uniqueId={message?.UniqueId ?? 0}");
         }
 
         private static void OnRpcTimeoutOrError(object sender, MessageObject message)
         {
-            Debug.LogError($"RPC timeout/error reqType={message?.GetType().FullName ?? "null"} uniqueId={message?.UniqueId ?? 0}");
         }
 
         private static void OnRpcErrorCode(object sender, MessageObject message)
         {
-            var response = message as IResponseMessage;
-            Debug.LogError($"RPC errorCode respType={message?.GetType().FullName ?? "null"} uniqueId={message?.UniqueId ?? 0} errorCode={response?.ErrorCode ?? -1}");
         }
 
         private static string FormatReqLogin(ReqLogin req)
