@@ -139,38 +139,10 @@ QQ群：467608841
 	<tbody>
 		<tr>
             <td align="center">
-                <a href="https://github.com/AlianBlank">
-                    <img src="https://avatars.githubusercontent.com/u/1950044?v=4" width="100;" alt="AlianBlank"/>
+                <a href="https://github.com/23213dsasdasdasda">
+                    <img src="https://avatars.githubusercontent.com/u/160688991?v=4" width="100;" alt="23213dsasdasdasda"/>
                     <br />
-                    <sub><b>Blank</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/blankalian">
-                    <img src="https://avatars.githubusercontent.com/u/147848600?v=4" width="100;" alt="blankalian"/>
-                    <br />
-                    <sub><b>blankalian</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/bambom">
-                    <img src="https://avatars.githubusercontent.com/u/11567449?v=4" width="100;" alt="bambom"/>
-                    <br />
-                    <sub><b>bambom</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/PlayerYF">
-                    <img src="https://avatars.githubusercontent.com/u/56374327?v=4" width="100;" alt="PlayerYF"/>
-                    <br />
-                    <sub><b>PlayerYF</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/baiwanziaaa">
-                    <img src="https://avatars.githubusercontent.com/u/56676921?v=4" width="100;" alt="baiwanziaaa"/>
-                    <br />
-                    <sub><b>Pilipala</b></sub>
+                    <sub><b>yang</b></sub>
                 </a>
             </td>
 		</tr>
