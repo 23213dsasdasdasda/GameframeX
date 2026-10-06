@@ -12,6 +12,7 @@
     <image id="i3dbs9q" name="Button BG.png" path="/Images/"/>
     <image id="ob7as9r" name="Background.png" path="/Images/"/>
     <image id="o1aos9s" name="backdrop2.png" path="/Images/"/>
+    <image id="6dusg" name="login.png" path="/Images/"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>

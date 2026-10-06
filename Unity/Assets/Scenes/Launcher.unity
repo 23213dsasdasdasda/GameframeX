@@ -93,7 +93,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000002, guid: 7d1713a817ccbe943a4c38b580b33dba,
+    type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -244,6 +245,7 @@ MonoBehaviour:
   componentType: GameFrameX.UI.FairyGUI.Runtime.UIManager
   m_EnableOpenUIFormSuccessEvent: 1
   m_EnableOpenUIFormFailureEvent: 1
+  m_EnableAutoReleaseUIForm: 1
   m_EnableCloseUIFormCompleteEvent: 1
   m_IsEnableUIShowAnimation: 0
   m_IsEnableUIHideAnimation: 0
@@ -693,6 +695,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: -1
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -923,6 +926,8 @@ MonoBehaviour:
   m_EntityGroupHelperTypeName: GameFrameX.Entity.Runtime.DefaultEntityGroupHelper
   m_CustomEntityGroupHelper: {fileID: 0}
   m_EntityGroups: []
+  m_DefaultCapacity: 512
+  m_DefaultExpireTime: 3600
 --- !u!114 &1681186168
 MonoBehaviour:
   m_ObjectHideFlags: 0

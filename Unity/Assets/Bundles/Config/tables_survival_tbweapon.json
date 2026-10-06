@@ -1,0 +1,62 @@
+[
+  {
+    "id": 101,
+    "name": "初始手枪",
+    "type": 0,
+    "damage": 10,
+    "fire_interval": 0.5,
+    "bullet_speed": 50,
+    "is_aoe": false,
+    "bullet_visual_id": 1
+  },
+  {
+    "id": 102,
+    "name": "脉冲激光",
+    "type": 1,
+    "damage": 5,
+    "fire_interval": 0.02,
+    "bullet_speed": 1000,
+    "is_aoe": false,
+    "bullet_visual_id": 2
+  },
+  {
+    "id": 103,
+    "name": "榴弹炮",
+    "type": 2,
+    "damage": 80,
+    "fire_interval": 2.5,
+    "bullet_speed": 25,
+    "is_aoe": true,
+    "bullet_visual_id": 3
+  },
+  {
+    "id": 104,
+    "name": "霰弹枪",
+    "type": 3,
+    "damage": 8,
+    "fire_interval": 1.2,
+    "bullet_speed": 45,
+    "is_aoe": false,
+    "bullet_visual_id": 4
+  },
+  {
+    "id": 105,
+    "name": "火箭炮",
+    "type": 2,
+    "damage": 140,
+    "fire_interval": 3.2,
+    "bullet_speed": 22,
+    "is_aoe": true,
+    "bullet_visual_id": 5
+  },
+  {
+    "id": 106,
+    "name": "喷火器",
+    "type": 1,
+    "damage": 6,
+    "fire_interval": 0.08,
+    "bullet_speed": 18,
+    "is_aoe": true,
+    "bullet_visual_id": 6
+  }
+]

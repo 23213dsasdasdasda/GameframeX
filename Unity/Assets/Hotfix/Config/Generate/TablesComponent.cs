@@ -17,13 +17,60 @@ namespace Hotfix.Config
     public partial class TablesComponent
     {
 
-        internal Local.TbLocalization TbLocalization { private set; get; }
+        /// <summary>
+        /// 武器属性
+        /// </summary>
+        internal TbWeapon TbWeapon { private set; get; }
 
-        internal Tables.TbAchievementConfig TbAchievementConfig { private set; get; }
+        /// <summary>
+        /// UI调度
+        /// </summary>
+        internal TbUIDispatcher TbUIDispatcher { private set; get; }
+
+        /// <summary>
+        /// 生存演示怪物配置
+        /// </summary>
+        internal Tables.TbMonsterConfig TbMonsterConfig { private set; get; }
+
+        /// <summary>
+        /// 生存演示怪物技能配置
+        /// </summary>
+        internal Tables.TbMonsterSkillConfig TbMonsterSkillConfig { private set; get; }
+
+        /// <summary>
+        /// 生存演示刷怪波次配置
+        /// </summary>
+        internal Tables.TbMonsterSpawnWaveConfig TbMonsterSpawnWaveConfig { private set; get; }
+
+        /// <summary>
+        /// 生存演示角色配置
+        /// </summary>
+        internal Tables.survival.TbRoleConfig TbRoleConfig { private set; get; }
+
+        /// <summary>
+        /// 生存演示词条配置
+        /// </summary>
+        internal Tables.survival.TbOptionConfig TbOptionConfig { private set; get; }
+
+        /// <summary>
+        /// 生存演示弹道表现配置
+        /// </summary>
+        internal Tables.survival.TbBulletVisualConfig TbBulletVisualConfig { private set; get; }
+
+        /// <summary>
+        /// 生存演示武器掉落模型配置
+        /// </summary>
+        internal Tables.survival.TbWeaponDropModelConfig TbWeaponDropModelConfig { private set; get; }
+
+        internal Tables.survival.TbSoundEventConfig TbSoundEventConfig { private set; get; }
+
+        internal Local.TbLocalization TbLocalization { private set; get; }
 
         internal Tables.TbItemConfig TbItemConfig { private set; get; }
 
         internal Tables.TbSoundsConfig TbSoundsConfig { private set; get; }
+
+        internal Tables.survival.Tbweapon Tbweapon { private set; get; }
 
         private ConfigComponent m_ConfigComponent;
 
@@ -52,13 +99,49 @@ namespace Hotfix.Config
             m_ConfigComponent.RemoveAllConfigs();
             var loadTasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
     
+            TbWeapon = new TbWeapon(() => loader("tbweapon"));
+            loadTasks.Add(TbWeapon.LoadAsync());
+            m_ConfigComponent.Add(nameof(TbWeapon), TbWeapon);
+
+            TbUIDispatcher = new TbUIDispatcher(() => loader("tbuidispatcher"));
+            loadTasks.Add(TbUIDispatcher.LoadAsync());
+            m_ConfigComponent.Add(nameof(TbUIDispatcher), TbUIDispatcher);
+
+            TbMonsterConfig = new Tables.TbMonsterConfig(() => loader("tables_tbmonsterconfig"));
+            loadTasks.Add(TbMonsterConfig.LoadAsync());
+            m_ConfigComponent.Add(nameof(Tables.TbMonsterConfig), TbMonsterConfig);
+
+            TbMonsterSkillConfig = new Tables.TbMonsterSkillConfig(() => loader("tables_tbmonsterskillconfig"));
+            loadTasks.Add(TbMonsterSkillConfig.LoadAsync());
+            m_ConfigComponent.Add(nameof(Tables.TbMonsterSkillConfig), TbMonsterSkillConfig);
+
+            TbMonsterSpawnWaveConfig = new Tables.TbMonsterSpawnWaveConfig(() => loader("tables_tbmonsterspawnwaveconfig"));
+            loadTasks.Add(TbMonsterSpawnWaveConfig.LoadAsync());
+            m_ConfigComponent.Add(nameof(Tables.TbMonsterSpawnWaveConfig), TbMonsterSpawnWaveConfig);
+
+            TbRoleConfig = new Tables.survival.TbRoleConfig(() => loader("tables_survival_tbroleconfig"));
+            loadTasks.Add(TbRoleConfig.LoadAsync());
+            m_ConfigComponent.Add(nameof(Tables.survival.TbRoleConfig), TbRoleConfig);
+
+            TbOptionConfig = new Tables.survival.TbOptionConfig(() => loader("tables_survival_tboptionconfig"));
+            loadTasks.Add(TbOptionConfig.LoadAsync());
+            m_ConfigComponent.Add(nameof(Tables.survival.TbOptionConfig), TbOptionConfig);
+
+            TbBulletVisualConfig = new Tables.survival.TbBulletVisualConfig(() => loader("tables_survival_tbbulletvisualconfig"));
+            loadTasks.Add(TbBulletVisualConfig.LoadAsync());
+            m_ConfigComponent.Add(nameof(Tables.survival.TbBulletVisualConfig), TbBulletVisualConfig);
+
+            TbWeaponDropModelConfig = new Tables.survival.TbWeaponDropModelConfig(() => loader("tables_survival_tbweapondropmodelconfig"));
+            loadTasks.Add(TbWeaponDropModelConfig.LoadAsync());
+            m_ConfigComponent.Add(nameof(Tables.survival.TbWeaponDropModelConfig), TbWeaponDropModelConfig);
+
+            TbSoundEventConfig = new Tables.survival.TbSoundEventConfig(() => loader("tables_survival_tbsoundeventconfig"));
+            loadTasks.Add(TbSoundEventConfig.LoadAsync());
+            m_ConfigComponent.Add(nameof(Tables.survival.TbSoundEventConfig), TbSoundEventConfig);
+
             TbLocalization = new Local.TbLocalization(() => loader("local_tblocalization"));
             loadTasks.Add(TbLocalization.LoadAsync());
             m_ConfigComponent.Add(nameof(Local.TbLocalization), TbLocalization);
-
-            TbAchievementConfig = new Tables.TbAchievementConfig(() => loader("tables_tbachievementconfig"));
-            loadTasks.Add(TbAchievementConfig.LoadAsync());
-            m_ConfigComponent.Add(nameof(Tables.TbAchievementConfig), TbAchievementConfig);
 
             TbItemConfig = new Tables.TbItemConfig(() => loader("tables_tbitemconfig"));
             loadTasks.Add(TbItemConfig.LoadAsync());
@@ -67,6 +150,10 @@ namespace Hotfix.Config
             TbSoundsConfig = new Tables.TbSoundsConfig(() => loader("tables_tbsoundsconfig"));
             loadTasks.Add(TbSoundsConfig.LoadAsync());
             m_ConfigComponent.Add(nameof(Tables.TbSoundsConfig), TbSoundsConfig);
+
+            Tbweapon = new Tables.survival.Tbweapon(() => loader("tables_survival_tbweapon"));
+            loadTasks.Add(Tbweapon.LoadAsync());
+            m_ConfigComponent.Add(nameof(Tables.survival.Tbweapon), Tbweapon);
 
     
             await System.Threading.Tasks.Task.WhenAll(loadTasks);
@@ -86,18 +173,38 @@ namespace Hotfix.Config
             {
                 throw new InvalidOperationException("Table is not loaded!");
             }
+            TbWeapon.TranslateText(translator);
+            TbUIDispatcher.TranslateText(translator);
+            TbMonsterConfig.TranslateText(translator);
+            TbMonsterSkillConfig.TranslateText(translator);
+            TbMonsterSpawnWaveConfig.TranslateText(translator);
+            TbRoleConfig.TranslateText(translator);
+            TbOptionConfig.TranslateText(translator);
+            TbBulletVisualConfig.TranslateText(translator);
+            TbWeaponDropModelConfig.TranslateText(translator);
+            TbSoundEventConfig.TranslateText(translator);
             TbLocalization.TranslateText(translator);
-            TbAchievementConfig.TranslateText(translator);
             TbItemConfig.TranslateText(translator);
             TbSoundsConfig.TranslateText(translator);
+            Tbweapon.TranslateText(translator);
         }
 
         private void ResolveRef()
         {
+            TbWeapon.ResolveRef(this);
+            TbUIDispatcher.ResolveRef(this);
+            TbMonsterConfig.ResolveRef(this);
+            TbMonsterSkillConfig.ResolveRef(this);
+            TbMonsterSpawnWaveConfig.ResolveRef(this);
+            TbRoleConfig.ResolveRef(this);
+            TbOptionConfig.ResolveRef(this);
+            TbBulletVisualConfig.ResolveRef(this);
+            TbWeaponDropModelConfig.ResolveRef(this);
+            TbSoundEventConfig.ResolveRef(this);
             TbLocalization.ResolveRef(this);
-            TbAchievementConfig.ResolveRef(this);
             TbItemConfig.ResolveRef(this);
             TbSoundsConfig.ResolveRef(this);
+            Tbweapon.ResolveRef(this);
         }
     
         public void Refresh()

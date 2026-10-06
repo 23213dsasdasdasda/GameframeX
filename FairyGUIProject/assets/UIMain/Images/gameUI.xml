@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="1407,768">
+  <displayList>
+    <image id="n1_jajg" name="n1" xy="0,0" src="6dus0" fileName="图层 1.png" pkg="t7nqh294"/>
+    <image id="n2_jajg" name="n2" xy="33,553" src="6dus1" fileName="图层 15.png"/>
+    <image id="n3_jajg" name="n3" xy="64,432" src="6dus2" fileName="图层 14.png"/>
+    <image id="n4_jajg" name="n4" xy="63,318" src="6dus3" fileName="图层 13.png"/>
+    <image id="n5_jajg" name="n5" xy="63,200" src="6dus4" fileName="图层 12.png"/>
+    <image id="n6_jajg" name="n6" xy="243,205" src="6dus5" fileName="图层 11.png"/>
+    <image id="n7_jajg" name="n7" xy="243,386" src="6dus6" fileName="图层 10.png"/>
+    <image id="n8_jajg" name="n8" xy="1252,464" src="6dus7" fileName="图层 9.png"/>
+    <image id="n9_jajg" name="n9" xy="1252,322" src="6dus8" fileName="图层 8.png"/>
+    <image id="n10_jajg" name="n10" xy="1252,178" src="6dus9" fileName="图层 7.png"/>
+    <image id="n11_jajg" name="n11" xy="1199,25" src="6dusa" fileName="图层 6.png"/>
+    <image id="n12_jajg" name="n12" xy="1012,25" src="6dusb" fileName="图层 5.png"/>
+    <image id="n13_jajg" name="n13" xy="825,25" src="6dusc" fileName="图层 4.png"/>
+    <image id="n14_jajg" name="n14" xy="515,45" src="6dusd" fileName="图层 3.png"/>
+    <image id="n15_jajg" name="n15" xy="30,8" src="6duse" fileName="图层 2.png"/>
+  </displayList>
+</component>

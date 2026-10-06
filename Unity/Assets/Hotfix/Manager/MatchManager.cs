@@ -34,6 +34,7 @@ using GameFrameX.Network.Runtime;
 using GameFrameX.Runtime;
 using Hotfix.Events;
 using Hotfix.Proto;
+using Hotfix.UI;
 
 namespace Hotfix.Manager
 {
@@ -215,6 +216,7 @@ namespace Hotfix.Manager
 
         private static async UniTaskVoid EnterMatchSceneAsync(string sceneName)
         {
+            GameApp.UI.CloseUIForm<UIMain>();
             var loadResult = await MatchGameSceneLoader.LoadAsync(sceneName);
             if (!loadResult)
             {

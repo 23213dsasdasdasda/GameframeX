@@ -1,0 +1,56 @@
+[
+  {
+    "weapon_id": 101,
+    "drop_name": "Desert Eagle",
+    "prefab_path": "Assets/Low Poly Guns v2.0/Prefabs/Guns/Desert Eagle.prefab",
+    "display_scale": 1,
+    "rotation_y": 90,
+    "height_offset": 0.15,
+    "notes": "手枪掉落模型"
+  },
+  {
+    "weapon_id": 102,
+    "drop_name": "Dragunov",
+    "prefab_path": "Assets/Low Poly Guns v2.0/Prefabs/Guns/Dragunov.prefab",
+    "display_scale": 1,
+    "rotation_y": 90,
+    "height_offset": 0.18,
+    "notes": "激光枪掉落模型，先用狙击枪外观代替"
+  },
+  {
+    "weapon_id": 103,
+    "drop_name": "M79",
+    "prefab_path": "Assets/Low Poly Guns v2.0/Prefabs/Guns/M79.prefab",
+    "display_scale": 1,
+    "rotation_y": 90,
+    "height_offset": 0.18,
+    "notes": "榴弹炮掉落模型"
+  },
+  {
+    "weapon_id": 104,
+    "drop_name": "Double Barrel",
+    "prefab_path": "Assets/Low Poly Guns v2.0/Prefabs/Guns/Double Barrel.prefab",
+    "display_scale": 1,
+    "rotation_y": 90,
+    "height_offset": 0.16,
+    "notes": "霰弹枪掉落模型"
+  },
+  {
+    "weapon_id": 105,
+    "drop_name": "M79",
+    "prefab_path": "Assets/Low Poly Guns v2.0/Prefabs/Guns/M79.prefab",
+    "display_scale": 1.05,
+    "rotation_y": 90,
+    "height_offset": 0.18,
+    "notes": "火箭炮暂用M79近似，后续有火箭筒模型可替换"
+  },
+  {
+    "weapon_id": 106,
+    "drop_name": "M16",
+    "prefab_path": "Assets/Low Poly Guns v2.0/Prefabs/Guns/M16.prefab",
+    "display_scale": 1,
+    "rotation_y": 90,
+    "height_offset": 0.18,
+    "notes": "喷火器暂用M16近似，后续有喷火器模型可替换"
+  }
+]

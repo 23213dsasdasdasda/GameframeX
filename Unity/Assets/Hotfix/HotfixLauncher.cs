@@ -30,6 +30,7 @@
 // ==========================================================================================
 using System.Net;
 using System.Threading.Tasks;
+using System.IO;
 using Cysharp.Threading.Tasks;
 using GameFrameX;
 using GameFrameX.Event.Runtime;
@@ -59,34 +60,47 @@ namespace Hotfix
             Log.Info("Hello World HybridCLR");
             ProtoMessageIdHandler.Init(HotfixProtoHandler.CurrentAssembly);
             _ = MatchManager.Instance;
-            ChineseChessBattleRuntime.Install();
-            LoadConfig();
-            LoadUI();
+            SurvivalMatchBattleRuntime.Install();
+            BootstrapAsync().Forget();
         }
 
-        private static async void LoadUI()
+        private static async UniTaskVoid BootstrapAsync()
+        {
+            await LoadConfigAsync();
+            await LoadUIAsync();
+        }
+
+        private static async UniTask LoadUIAsync()
         {
 #if ENABLE_UI_FAIRYGUI
             GameApp.FUIPackage.AddPackageAsync(Utility.Asset.Path.GetUIPackagePath(FUIPackage.UICommon));
             GameApp.FUIPackage.AddPackageAsync(Utility.Asset.Path.GetUIPackagePath(FUIPackage.UICommonAvatar));
+            GameApp.FUIPackage.AddPackageAsync(Utility.Asset.Path.GetUIPackagePath(FUIPackage.UI3Pick1));
 #endif
             await GameApp.UI.OpenAsync<UILogin>();
             var item = GameApp.Config.GetConfig<TbSoundsConfig>().FirstOrDefault;
             Log.Info(item);
         }
 
-        static async void LoadConfig()
+        private static async UniTask LoadConfigAsync()
         {
             var tablesComponent = new TablesComponent();
             tablesComponent.Init(GameApp.Config);
+            Log.Info("[ConfigLoad] begin tables load.");
 #if ENABLE_BINARY_CONFIG
-            // 使用二进制配置表
             await tablesComponent.LoadAsync(ConfigBufferLoader);
 #else
-            // 使用JSON配置表
             await tablesComponent.LoadAsync(ConfigLoader);
 #endif
+            Log.Info($"[ConfigLoad] complete loaded={tablesComponent.IsLoaded} " +
+                     $"tbweapon={GameApp.Config.GetConfig<TbWeapon>()?.Count ?? -1} " +
+                     $"survivalWeapon={GameApp.Config.GetConfig<Hotfix.Config.Tables.survival.Tbweapon>()?.Count ?? -1} " +
+                     $"monster={GameApp.Config.GetConfig<Hotfix.Config.Tables.TbMonsterConfig>()?.Count ?? -1} " +
+                     $"monsterSkill={GameApp.Config.GetConfig<Hotfix.Config.Tables.TbMonsterSkillConfig>()?.Count ?? -1} " +
+                     $"wave={GameApp.Config.GetConfig<Hotfix.Config.Tables.TbMonsterSpawnWaveConfig>()?.Count ?? -1} " +
+                     $"bulletVisual={GameApp.Config.GetConfig<Hotfix.Config.Tables.survival.TbBulletVisualConfig>()?.Count ?? -1}");
         }
+
 
 #if ENABLE_BINARY_CONFIG
         /// <summary>
@@ -107,8 +121,32 @@ namespace Hotfix
         /// <returns></returns>
         private static async Task<JSONNode> ConfigLoader(string file)
         {
-            var assetHandle = await GameApp.Asset.LoadAssetAsync<TextAsset>(Utility.Asset.Path.GetConfigPath(file, Utility.Const.FileNameSuffix.Json));
-            return JSON.Parse(assetHandle.GetAssetObject<TextAsset>().text);
+            var assetPath = Utility.Asset.Path.GetConfigPath(file, Utility.Const.FileNameSuffix.Json);
+            Log.Info($"[ConfigLoad] request file={file} path={assetPath}");
+
+            var directConfigPath = Path.Combine(Application.dataPath, "Bundles", "Config", file + Utility.Const.FileNameSuffix.Json);
+            if (File.Exists(directConfigPath))
+            {
+                var directText = await File.ReadAllTextAsync(directConfigPath);
+                Log.Info($"[ConfigLoad] direct file hit file={file} path={directConfigPath} textLength={directText?.Length ?? 0}");
+                var directJson = JSON.Parse(directText);
+                Log.Info($"[ConfigLoad] direct parsed file={file} nodeType={directJson?.Tag.ToString() ?? "null"} count={directJson?.Count ?? -1}");
+                return directJson;
+            }
+
+            var assetHandle = await GameApp.Asset.LoadAssetAsync<TextAsset>(assetPath);
+            var textAsset = assetHandle.GetAssetObject<TextAsset>();
+            if (textAsset == null)
+            {
+                Log.Error($"[ConfigLoad] asset missing file={file} path={assetPath}");
+                return null;
+            }
+
+            Log.Info($"[ConfigLoad] asset ok file={file} path={assetPath} bytes={textAsset.bytes?.Length ?? 0} textLength={textAsset.text?.Length ?? 0}");
+            var json = JSON.Parse(textAsset.text);
+            var childCount = json != null ? json.Count : -1;
+            Log.Info($"[ConfigLoad] parsed file={file} nodeType={json?.Tag.ToString() ?? "null"} count={childCount}");
+            return json;
         }
 #endif
     }

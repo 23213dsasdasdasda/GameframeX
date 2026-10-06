@@ -1,6 +1,7 @@
 ﻿using GameFrameX.Runtime;
 #if ENABLE_GAME_FRAME_X_HYBRID_CLR && !DISABLE_HYBRIDCLR
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using HybridCLR;
@@ -36,7 +37,7 @@ namespace Unity.Startup.Procedure
             }
 
             Log.Info("开始加载AOT DLL");
-            var aotDlls = AOTGenericReferences.PatchedAOTAssemblyList.ToArray();
+            var aotDlls = GetPatchedAotAssemblyList().ToArray();
             foreach (var aotDll in aotDlls)
             {
                 Log.Info("开始加载AOT DLL ==> " + aotDll);
@@ -67,6 +68,16 @@ namespace Unity.Startup.Procedure
             var method = entryType.GetMethod("Main");
             Log.Info("加载程序集Hotfix 结束 EntryType=>method " + method?.Name);
             method?.Invoke(null, null);
+        }
+
+        private static IReadOnlyList<string> GetPatchedAotAssemblyList()
+        {
+            var type = AppDomain.CurrentDomain
+                                .GetAssemblies()
+                                .Select(assembly => assembly.GetType("AOTGenericReferences", false))
+                                .FirstOrDefault(currentType => currentType != null);
+            var field = type?.GetField("PatchedAOTAssemblyList", BindingFlags.Public | BindingFlags.Static);
+            return field?.GetValue(null) as IReadOnlyList<string> ?? Array.Empty<string>();
         }
 #else
         private static void RunNative()

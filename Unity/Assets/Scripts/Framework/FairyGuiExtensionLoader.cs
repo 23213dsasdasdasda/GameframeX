@@ -100,7 +100,7 @@ namespace Unity.Startup.Procedure
                 {
                     // 包内文件
                     var assetHandle = await GameApp.Asset.LoadAssetAsync<Texture2D>(url);
-                    if (assetHandle.IsSucceed())
+                    if (assetHandle.IsDone && assetHandle.Status == EOperationStatus.Succeed)
                     {
                         tempTexture = new NTexture(assetHandle.GetAssetObject<Texture2D>());
                         _cache[url] = new LoaderItem(url, tempTexture, assetHandle);

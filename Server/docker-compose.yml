@@ -12,7 +12,7 @@
     networks:
       - backend
   gameframex:
-    image: gameframex-server:1.0.4
+    image: gameframex-server:1.1.8
     container_name: gameframex
     ports:
       # APM 端口

@@ -1,0 +1,163 @@
+## [3.2.5](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/compare/3.2.4...3.2.5) (2026-04-03)
+
+
+### Bug Fixes
+
+* **FairyGUI:** 修复资源句柄未释放导致的内存泄漏 ([601b8da](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/601b8da9f28266cfbbe65cccc88ca529544a0ae3))
+
+## [3.2.4](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/compare/3.2.3...3.2.4) (2026-04-01)
+
+
+### Bug Fixes
+
+* **UI:** 修复资源加载异常处理和属性名拼写错误 ([d69216a](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/d69216a2c9e3a6d1432c8eb96dec1be68a7dfe69))
+* **UI:** 改进UI路径查找的错误信息并优化字符串比较 ([f7f1043](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/f7f104355b818c569fa403b4b03ae48a23426f53))
+* 为Unity IL2CPP代码裁剪添加Preserve属性 ([9eabb90](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/9eabb909dcfd29b6921096e5c3d5e607890f35ec))
+* 当禁用自动释放时跳过FairyGUI表单释放 ([4b87188](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/4b8718850672f58f0374a7bd0f3440e6d302c80c))
+
+## [3.2.3](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/compare/3.2.2...3.2.3) (2026-03-27)
+
+
+### Bug Fixes
+
+* **UI:** 修复FairyGUI资源卸载时可能错误销毁GComponent的问题 ([77de48e](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/77de48ea0a4deffccc08880197a143e7137f6b87))
+* **ui:** 修复UI资源路径传递问题 ([895ce96](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/895ce96a412328a8297ef5cbf53a4c149ce823fc))
+* **UI:** 重置UI表单时清空表单类型字段 ([0c534ed](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/0c534ed3553d07185238dd7e6540e4208fcb722f))
+* 修正格式化字符串中参数索引的错误 ([fbcd687](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/fbcd687cd54b958edee8183cdfe3d756eeaa1a68))
+* 处理无斜杠路径时包名提取错误 ([1b94e9a](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/1b94e9ae2e9c14e8295f59956d0df257d409dd2f))
+
+## [3.2.2](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/compare/3.2.1...3.2.2) (2026-03-25)
+
+
+### Bug Fixes
+
+* 修复UI资源卸载时未区分AssetBundle与Resources资源的问题 ([ed79223](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/ed792231b99f7fbc59dd6b987a29d18fc1fdde8b))
+
+## [3.2.1](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/compare/3.2.0...3.2.1) (2026-03-06)
+
+
+### Bug Fixes
+
+* 修复异步加载资源时类型不匹配的问题 ([704477a](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/704477ac67ad8fae9b0538a95405df6816d40b3f))
+* 修复异步资源加载状态检查条件 ([b547b86](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/b547b86064dc9cc584786ae10dfedf90f54d3aa3))
+* 修复释放界面资源时未正确传递资源路径的问题 ([3e7c7ca](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/3e7c7ca9b84f25da48c8af6a41c057c8bbebb701))
+
+# [3.2.0](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/compare/3.1.0...3.2.0) (2026-03-05)
+
+
+### Features
+
+* **FairyGUI:** 添加界面组深度支持并更新Handler方法 ([9b64b6b](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/9b64b6b02d79cbfee942a831f5cb246ca3d73616))
+
+# [3.1.0](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/compare/3.0.0...3.1.0) (2025-12-23)
+
+
+### Bug Fixes
+
+* **FairyGUIFormHelper:** 修复UI组属性获取和赋值逻辑 ([7c3bbc3](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/7c3bbc337ff646268ef9523b1944f36bac6bb369))
+* **FairyGUIFormHelper:** 修复未设置动画属性时未使用默认值的问题 ([db4186c](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/db4186cb36fffc7b731ec20769afb480e68093b1))
+* **UIManager:** 修复UI表单释放时使用ContainsKey替代Contains的问题 ([2d5be7e](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/2d5be7e25a93fa2cd1fbdbb6ed7abfee41097d06))
+* **UIManager:** 修复界面复用时的资源释放问题 ([1592e2f](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/1592e2f0641c6dac97d072697805a04e9c4b8663))
+* **UIManager:** 在Init方法中添加RecycleInterval参数 ([8af825a](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/8af825acb747cf8d4de9039d9df9ef639d4f78a8))
+* **UIManager:** 在关闭UI时移除组件并释放资源 ([68cebb0](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/68cebb0dd61c94db1dbba22fb0ccdde0c80c66a9))
+* **UI:** 修复UI资源释放时未处理资源句柄的问题 ([5ba15ce](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/5ba15cee756eb40d81604363b3d7ffdaa7134cc2))
+* **UI:** 修复未设置UI分组的问题 ([38b642e](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/38b642e216ef6a1059bf047c9f88a0b831b713e2))
+* **UI:** 修复组件释放时未正确清理的问题 ([129a244](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/129a244bb21e79f2dd7784bd528ef79ee3436dfb))
+* 修正无效UI组的错误日志信息 ([95d3d13](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/95d3d13093c75a2eb74bb8676c121c5a5ca7286e))
+
+
+### Features
+
+* **FUI:** 添加界面显示和隐藏方法 ([55c602c](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/55c602c68fab11ede16c969c09dd632d2315b245))
+* **UIManager:** 添加UI表单加载队列管理功能 ([c574686](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/c57468694f70b7752a765ec1e7cf442236a4ce5f))
+* **UI:** 添加UI表单显示和隐藏动画支持 ([e00146e](https://github.com/gameframex/com.gameframex.unity.ui.fairygui/commit/e00146ee7e3da3a48dfdc209a03f625916fa7e4e))
+
+# Changelog
+
+## [3.0.0](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/3.0.0) (2025-10-25)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/2.1.0...3.0.0)
+
+## [2.1.0](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/2.1.0) (2025-09-17)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/2.0.0...2.1.0)
+
+**Merged pull requests:**
+
+- \[修改\] RemovePackage 时如果只有描述文件,没有资源文件，报 can not be null [\#1](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/pull/1) ([DreamChaseAndVera](https://github.com/DreamChaseAndVera))
+
+## [2.0.0](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/2.0.0) (2025-06-12)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.2.6...2.0.0)
+
+## [1.2.6](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.2.6) (2025-06-07)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.2.5...1.2.6)
+
+## [1.2.5](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.2.5) (2025-05-31)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.2.4...1.2.5)
+
+## [1.2.4](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.2.4) (2025-05-30)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.2.3...1.2.4)
+
+## [1.2.3](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.2.3) (2025-04-17)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.2.2...1.2.3)
+
+## [1.2.2](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.2.2) (2025-04-15)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.2.1...1.2.2)
+
+## [1.2.1](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.2.1) (2025-03-14)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.2.0...1.2.1)
+
+## [1.2.0](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.2.0) (2025-03-14)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.1.0...1.2.0)
+
+## [1.1.0](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.1.0) (2025-02-05)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.0.8...1.1.0)
+
+## [1.0.8](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.0.8) (2025-01-14)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.0.7...1.0.8)
+
+## [1.0.7](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.0.7) (2025-01-13)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.0.6...1.0.7)
+
+## [1.0.6](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.0.6) (2024-12-20)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.0.5...1.0.6)
+
+## [1.0.5](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.0.5) (2024-11-08)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.0.4...1.0.5)
+
+## [1.0.4](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.0.4) (2024-10-22)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.0.3...1.0.4)
+
+## [1.0.3](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.0.3) (2024-10-09)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.0.2...1.0.3)
+
+## [1.0.2](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.0.2) (2024-10-09)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.0.1...1.0.2)
+
+## [1.0.1](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.0.1) (2024-09-27)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/1.0.0...1.0.1)
+
+## [1.0.0](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/tree/1.0.0) (2024-09-09)
+
+[Full Changelog](https://github.com/GameFrameX/com.gameframex.unity.ui.fairygui/compare/32afc0f089a2741e61e39e4c728ef6709863d983...1.0.0)
+
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*

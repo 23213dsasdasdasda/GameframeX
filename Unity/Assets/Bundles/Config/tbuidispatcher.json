@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "name": "首充豪礼",
+    "popup_type": 1,
+    "layer": 2,
+    "priority": 100,
+    "package_name": "Activity",
+    "component_name": "FirstPayPopup",
+    "auto_open_on_login": true
+  },
+  {
+    "id": "2",
+    "name": "30天签到",
+    "popup_type": 1,
+    "layer": 2,
+    "priority": 90,
+    "package_name": "Activity",
+    "component_name": "CheckInPopup",
+    "auto_open_on_login": true
+  },
+  {
+    "id": "3",
+    "name": "体力回满提示",
+    "popup_type": 3,
+    "layer": 3,
+    "priority": 10,
+    "package_name": "Common",
+    "component_name": "ToastComponent",
+    "auto_open_on_login": false
+  },
+  {
+    "id": "4",
+    "name": "获得物品",
+    "popup_type": 2,
+    "layer": 2,
+    "priority": 50,
+    "package_name": "Common",
+    "component_name": "RewardPopup",
+    "auto_open_on_login": false
+  }
+]

@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="1920,1080">
   <displayList>
+    <loader id="n1_ob7a" name="player_icon" xy="44,915" size="117,130" align="center" vAlign="middle" fill="scale"/>
     <loader id="n4_ob7a" name="bg" xy="1,0" size="1920,1080" url="ui://q9u97yzfo1ao3" align="center" vAlign="middle" fill="scale">
       <relation target="" sidePair="center-center,middle-middle"/>
       <relation target="n22_o1ao" sidePair=""/>
-      <relation target="n13_o1ao" sidePair=""/>
-      <relation target="n14_o1ao" sidePair=""/>
     </loader>
-    <component id="n0_xws7" name="bag_button" src="xws71" fileName="BagButton.xml" xy="1602,716" size="331,100">
+    <image id="n44_6dus" name="n44" src="6dusj" fileName="Images/backdropUI.png" xy="-8,-10" size="1932,1095"/>
+    <component id="n0_xws7" name="bag_button" src="xws71" fileName="BagButton.xml" xy="1337,636" size="331,100">
       <Button title="背包"/>
     </component>
-    <loader id="n1_ob7a" name="player_icon" xy="44,915" size="117,130" align="center" vAlign="middle" fill="scale"/>
     <text id="n2_ob7a" name="player_name" xy="176,907" size="253,42" fontSize="30" autoSize="none" text=""/>
     <text id="n3_ob7a" name="player_level" xy="175,950" size="285,44" fontSize="30" autoSize="none" text=""/>
-    <component id="n5_lmmi" name="user_info_button" src="xws71" fileName="BagButton.xml" xy="1601,582" size="265,100">
+    <component id="n5_lmmi" name="user_info_button" src="xws71" fileName="BagButton.xml" xy="1337,498" size="265,100">
       <Button title="个人信息"/>
     </component>
-    <component id="n6_k43w" name="not_rpc_button" src="xws71" fileName="BagButton.xml" xy="1602,439" size="265,100">
+    <component id="n6_k43w" name="not_rpc_button" src="xws71" fileName="BagButton.xml" xy="1335,363" size="265,100">
       <Button title="非RPC功能"/>
     </component>
-    <image id="n7_o1ao" name="n7" src="o1ao5" fileName="Images/图层 12.png" xy="1107,10" size="773,118"/>
-    <image id="n8_o1ao" name="n8" src="o1aoc" fileName="Images/图层 7.png" xy="54,630" size="97,99"/>
-    <image id="n9_o1ao" name="n9" src="o1aod" fileName="Images/图层 8.png" xy="36,529" size="134,100"/>
-    <image id="n10_o1ao" name="n10" src="o1aoe" fileName="Images/图层 9.png" xy="37,405" size="130,123"/>
-    <image id="n11_o1ao" name="n11" src="o1aof" fileName="Images/图层 10.png" xy="43,278" size="123,126"/>
-    <image id="n12_o1ao" name="n12" src="o1aog" fileName="Images/图层 11.png" xy="46,164" size="117,113"/>
-    <image id="n13_o1ao" name="n13" src="o1aoh" fileName="Images/图层 5.png" xy="34,14" size="598,126"/>
-    <image id="n14_o1ao" name="n14" src="o1ao6" fileName="Images/未标题-5.png" xy="-10,803" size="1932,279"/>
     <image id="n16_o1ao" name="n16" src="o1ao8" fileName="Images/图层 15.png" xy="1010,933" size="205,66"/>
-    <image id="n17_o1ao" name="n17" src="o1ao9" fileName="Images/图层 16.png" xy="1499,924" size="352,119"/>
-    <image id="n18_o1ao" name="n18" src="o1aoa" fileName="Images/icongirl.png" xy="47,905" size="114,130"/>
+    <image id="n17_o1ao" name="n17" src="o1ao9" fileName="Images/图层 16.png" xy="1315,889" size="352,119"/>
     <text id="n19_o1ao" name="player_gold" xy="1210,46" size="108,39" fontSize="25" color="#ffffff" align="center" autoSize="none" text="0"/>
     <text id="n20_o1ao" name="player_diamond" xy="1418,45" size="108,39" fontSize="25" color="#ffffff" align="center" autoSize="none" text="0"/>
     <text id="n21_o1ao" name="player_pinkdimond" xy="1606,46" size="108,39" fontSize="25" color="#ffffff" align="center" autoSize="none" text="0"/>
-    <text id="n22_o1ao" name="player_rank" xy="1516,936" size="337,94" blend="add" font="Alimama DaoLiTi" fontSize="72" color="#ffffff" align="center" autoSize="none" strokeColor="#000000" shadowColor="#000000" shadowOffset="6,1" text="排位赛"/>
+    <text id="n22_o1ao" name="player_rank" xy="1332,901" size="337,94" blend="add" font="Alimama DaoLiTi" fontSize="72" color="#ffffff" align="center" autoSize="none" strokeColor="#000000" shadowColor="#000000" shadowOffset="6,1" text="排位赛"/>
     <text id="n24_o1ao" name="player_fjlb" xy="1036,944" size="155,50" blend="add" font="Microsoft YaHei" fontSize="28" color="#ffffff" align="center" autoSize="none" strokeColor="#000000" shadowColor="#000000" shadowOffset="6,1" text="房间列表"/>
     <component id="n27_mu49" name="n27" src="xws71" fileName="BagButton.xml" xy="620,918" scale="0.638,0.76">
       <Button sound=""/>
     </component>
+    <image id="n30_6dus" name="n30" src="6dus6" fileName="Images/图层 10(1).png" xy="311,328"/>
+    <image id="n31_6dus" name="n31" src="6dus5" fileName="Images/图层 11(1).png" xy="309,528"/>
+    <image id="n32_6dus" name="n32" src="6dus4" fileName="Images/图层 12(1).png" xy="72,221"/>
+    <image id="n33_6dus" name="n33" src="6dus3" fileName="Images/图层 13.png" xy="71,380"/>
+    <image id="n34_6dus" name="n34" src="6dus2" fileName="Images/图层 14(1).png" xy="72,531"/>
+    <image id="n35_6dus" name="n35" src="6dus1" fileName="Images/图层 15(1).png" xy="89,789"/>
+    <image id="n36_6dus" name="n36" src="6duse" fileName="Images/图层 2.png" xy="54,2"/>
+    <image id="n37_6dus" name="n37" src="6dusd" fileName="Images/图层 3.png" xy="530,26"/>
+    <image id="n38_6dus" name="n38" src="6dusc" fileName="Images/图层 4.png" xy="1161,15"/>
+    <image id="n39_6dus" name="n39" src="6dusb" fileName="Images/图层 5(1).png" xy="1362,12"/>
+    <image id="n40_6dus" name="n40" src="6dusa" fileName="Images/图层 6(1).png" xy="1574,11"/>
+    <image id="n41_6dus" name="n41" src="6dus9" fileName="Images/图层 7(1).png" xy="1707,219"/>
+    <image id="n42_6dus" name="n42" src="6dus8" fileName="Images/图层 8(1).png" xy="1710,399"/>
+    <image id="n43_6dus" name="n43" src="6dus7" fileName="Images/图层 9(1).png" xy="1715,572"/>
   </displayList>
 </component>

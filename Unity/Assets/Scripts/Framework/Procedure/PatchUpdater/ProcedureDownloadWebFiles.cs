@@ -31,8 +31,8 @@ namespace Unity.Startup.Procedure
                 ChangeState<ProcedureCreateDownloader>(procedureOwner);
             }
 
-            downloader.DownloadErrorCallback = DownloaderOnDownloadErrorCallback;
-            downloader.DownloadUpdateCallback = OnDownloadProgressCallback;
+            downloader.OnDownloadErrorCallback = DownloaderOnDownloadErrorCallback;
+            downloader.OnDownloadProgressCallback = OnDownloadProgressCallback;
             downloader.BeginDownload();
             yield return downloader;
 

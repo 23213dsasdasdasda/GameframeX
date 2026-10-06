@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="3039,1733">
+  <displayList>
+    <image id="n2_rwff" name="option_btn1" src="6dus1" fileName="圆角矩形 1.png" xy="592,650"/>
+    <image id="n3_rwff" name="option_btn2" src="6dus1" fileName="圆角矩形 1.png" xy="1960,650"/>
+    <image id="n4_rwff" name="option_btn3" src="6dus1" fileName="圆角矩形 1.png" xy="1276,650"/>
+    <image id="n5_rwff" name="n5" src="6dus2" fileName="图层 2.png" xy="560,517"/>
+    <image id="n6_rwff" name="n6" src="6dus2" fileName="图层 2.png" xy="1928,517"/>
+    <image id="n7_rwff" name="n7" src="6dus2" fileName="图层 2.png" xy="1244,517"/>
+    <image id="n8_rwff" name="n8" src="6dus3" fileName="图层 5.png" xy="916,278"/>
+    <image id="n9_rwff" name="n9" src="6dus4" fileName="图层 6.png" xy="911,279"/>
+    <text id="n10_6dus" name="option_title1" xy="659,551" size="348,80" fontSize="58" color="#ffffff" align="center" autoSize="none" bold="true" strokeColor="#000000" strokeSize="7" shadowColor="#000000" shadowOffset="1,1" text="强化能力"/>
+    <text id="n11_6dus" name="option_title2" xy="1347,553" size="348,80" fontSize="58" color="#ffffff" align="center" autoSize="none" bold="true" strokeColor="#000000" strokeSize="7" shadowColor="#000000" shadowOffset="1,1" text="强化能力"/>
+    <text id="n12_6dus" name="option_title3" xy="2025,550" size="348,80" fontSize="58" color="#ffffff" align="center" autoSize="none" bold="true" strokeColor="#000000" strokeSize="7" shadowColor="#000000" shadowOffset="1,1" text="强化能力"/>
+    <text id="n13_6dus" name="option_desc1" xy="622,1095" size="430,167" fontSize="38" color="#ffffff" autoSize="none" bold="true" strokeColor="#000000" strokeSize="7" shadowColor="#000000" shadowOffset="1,1" text="强化能力啊刷卡机好的哈会计师登记卡手机卡打色卡几哈&#xA;"/>
+    <text id="n14_6dus" name="option_desc2" xy="1298,1095" size="430,167" fontSize="38" color="#ffffff" autoSize="none" bold="true" strokeColor="#000000" strokeSize="7" shadowColor="#000000" shadowOffset="1,1" text="强化能力啊刷卡机好的哈会计师登记卡手机卡打色卡几哈&#xA;"/>
+    <text id="n15_6dus" name="option_desc3" xy="1987,1091" size="430,167" fontSize="38" color="#ffffff" autoSize="none" bold="true" strokeColor="#000000" strokeSize="7" shadowColor="#000000" shadowOffset="1,1" text="强化能力啊刷卡机好的哈会计师登记卡手机卡打色卡几哈&#xA;"/>
+    <component id="n16_6dus" name="option_action_btn1" src="6dus6" fileName="Button1.xml" xy="570,531" size="538,755" alpha="0">
+      <Button sound="ui://t2ftidd06dush"/>
+    </component>
+    <component id="n17_6dus" name="option_action_btn2" src="6dus6" fileName="Button1.xml" xy="1257,531" size="538,755" alpha="0">
+      <Button sound="ui://t2ftidd06dush"/>
+    </component>
+    <component id="n18_6dus" name="option_action_btn3" src="6dus6" fileName="Button1.xml" xy="1934,515" size="538,755" alpha="0">
+      <Button sound="ui://t2ftidd06dush"/>
+    </component>
+    <image id="n19_ss4e" name="n19" src="ss4ei" fileName="bullet_0.png" xy="659,1003" size="59,58"/>
+    <image id="n20_ss4e" name="n20" src="ss4ei" fileName="bullet_0.png" xy="724,1002" size="59,58"/>
+    <image id="n21_ss4e" name="n21" src="ss4ei" fileName="bullet_0.png" xy="788,1001" size="59,58"/>
+    <image id="n22_ss4e" name="n22" src="ss4ei" fileName="bullet_0.png" xy="856,999" size="59,58"/>
+    <image id="n23_ss4e" name="n23" src="ss4ei" fileName="bullet_0.png" xy="926,997" size="59,58"/>
+    <image id="n24_ss4e" name="n24" src="ss4ei" fileName="bullet_0.png" xy="1350,1004" size="59,58"/>
+    <image id="n25_ss4e" name="n25" src="ss4ei" fileName="bullet_0.png" xy="1414,1003" size="59,58"/>
+    <image id="n26_ss4e" name="n26" src="ss4ei" fileName="bullet_0.png" xy="1478,1002" size="59,58"/>
+    <image id="n27_ss4e" name="n27" src="ss4ei" fileName="bullet_0.png" xy="1546,1000" size="59,58"/>
+    <image id="n28_ss4e" name="n28" src="ss4ei" fileName="bullet_0.png" xy="1616,998" size="59,58"/>
+    <image id="n29_ss4e" name="n29" src="ss4ei" fileName="bullet_0.png" xy="2046,1007" size="59,58"/>
+    <image id="n30_ss4e" name="n30" src="ss4ei" fileName="bullet_0.png" xy="2110,1006" size="59,58"/>
+    <image id="n31_ss4e" name="n31" src="ss4ei" fileName="bullet_0.png" xy="2174,1005" size="59,58"/>
+    <image id="n32_ss4e" name="n32" src="ss4ei" fileName="bullet_0.png" xy="2242,1003" size="59,58"/>
+    <image id="n33_ss4e" name="n33" src="ss4ei" fileName="bullet_0.png" xy="2312,1001" size="59,58"/>
+  </displayList>
+</component>

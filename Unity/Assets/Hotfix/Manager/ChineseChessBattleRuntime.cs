@@ -21,6 +21,7 @@ namespace Hotfix.Manager
 
             _installed = true;
             SceneManager.sceneLoaded += OnSceneLoaded;
+            TryBuild(SceneManager.GetActiveScene());
         }
 
         private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -33,6 +34,24 @@ namespace Hotfix.Manager
 
             if (!string.Equals(scene.name, "ChineseChess"))
             {
+                DestroyRoot();
+                return;
+            }
+
+            BuildChineseChessDemoView();
+        }
+
+        private static void TryBuild(Scene scene)
+        {
+            if (!MatchBattleContext.HasContext || !string.Equals(scene.name, MatchBattleContext.SceneName))
+            {
+                DestroyRoot();
+                return;
+            }
+
+            if (!string.Equals(scene.name, "ChineseChess"))
+            {
+                DestroyRoot();
                 return;
             }
 
@@ -42,57 +61,7 @@ namespace Hotfix.Manager
         private static void BuildChineseChessDemoView()
         {
             DestroyRoot();
-
-            _root = new GameObject("ChineseChessBattleRuntime");
-            var canvas = _root.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-
-            var scaler = _root.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            _root.AddComponent<GraphicRaycaster>();
-
-            var background = CreateImage("Background", _root.transform, new Color32(25, 24, 22, 255));
-            Stretch(background.rectTransform);
-
-            var panel = CreateImage("Panel", background.transform, new Color32(48, 34, 25, 220));
-            panel.rectTransform.anchorMin = new Vector2(0.05f, 0.06f);
-            panel.rectTransform.anchorMax = new Vector2(0.95f, 0.94f);
-            panel.rectTransform.offsetMin = Vector2.zero;
-            panel.rectTransform.offsetMax = Vector2.zero;
-
-            var title = CreateText("Title", panel.transform, 44, TextAnchor.MiddleCenter);
-            title.text = "ChineseChess Match Carrier";
-            title.color = new Color32(249, 223, 167, 255);
-            title.rectTransform.anchorMin = new Vector2(0.5f, 1f);
-            title.rectTransform.anchorMax = new Vector2(0.5f, 1f);
-            title.rectTransform.sizeDelta = new Vector2(680, 70);
-            title.rectTransform.anchoredPosition = new Vector2(0, -55);
-
-            var summary = CreateText("Summary", panel.transform, 24, TextAnchor.UpperLeft);
-            summary.text = BuildSummaryText();
-            summary.rectTransform.anchorMin = new Vector2(0f, 1f);
-            summary.rectTransform.anchorMax = new Vector2(0f, 1f);
-            summary.rectTransform.sizeDelta = new Vector2(620, 260);
-            summary.rectTransform.anchoredPosition = new Vector2(50, -120);
-
-            var tip = CreateText("Tip", panel.transform, 22, TextAnchor.UpperLeft);
-            tip.text = "This scene is a gameplay carrier placeholder. Replace the board logic later with your real canyon system.";
-            tip.color = new Color32(194, 197, 203, 255);
-            tip.rectTransform.anchorMin = new Vector2(0f, 0f);
-            tip.rectTransform.anchorMax = new Vector2(0f, 0f);
-            tip.rectTransform.sizeDelta = new Vector2(620, 100);
-            tip.rectTransform.anchoredPosition = new Vector2(50, 90);
-
-            BuildBoard(panel.transform);
-
-            var exitButton = CreateButton("ExitButton", panel.transform, "Leave Room Demo");
-            var buttonRect = exitButton.GetComponent<RectTransform>();
-            buttonRect.anchorMin = new Vector2(1f, 0f);
-            buttonRect.anchorMax = new Vector2(1f, 0f);
-            buttonRect.sizeDelta = new Vector2(240, 68);
-            buttonRect.anchoredPosition = new Vector2(-70, 60);
-            exitButton.onClick.AddListener(() => LeaveBattleDemoAsync().Forget());
+            Log.Info("ChineseChessBattleRuntime placeholder disabled for gameplay scene.");
         }
 
         private static string BuildSummaryText()

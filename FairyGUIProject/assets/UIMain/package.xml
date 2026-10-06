@@ -11,7 +11,6 @@
     <image id="o1ao7" name="图层 14.png" path="/Images/"/>
     <image id="o1ao8" name="图层 15.png" path="/Images/"/>
     <image id="o1ao9" name="图层 16.png" path="/Images/"/>
-    <image id="o1aoa" name="icongirl.png" path="/Images/"/>
     <image id="o1aob" name="图层 6.png" path="/Images/"/>
     <image id="o1aoc" name="图层 7.png" path="/Images/"/>
     <image id="o1aod" name="图层 8.png" path="/Images/"/>
@@ -20,6 +19,22 @@
     <image id="o1aog" name="图层 11.png" path="/Images/"/>
     <image id="o1aoh" name="图层 5.png" path="/Images/"/>
     <component id="o1aoi" name="游戏大厅1.0版本.xml" path="/Images/"/>
+    <component id="6dusf" name="gameUI.xml" path="/Images/"/>
+    <image id="6dus6" name="图层 10(1).png" path="/Images/"/>
+    <image id="6dus5" name="图层 11(1).png" path="/Images/"/>
+    <image id="6dus4" name="图层 12(1).png" path="/Images/"/>
+    <image id="6dus3" name="图层 13.png" path="/Images/"/>
+    <image id="6dus2" name="图层 14(1).png" path="/Images/"/>
+    <image id="6dus1" name="图层 15(1).png" path="/Images/"/>
+    <image id="6duse" name="图层 2.png" path="/Images/"/>
+    <image id="6dusd" name="图层 3.png" path="/Images/"/>
+    <image id="6dusc" name="图层 4.png" path="/Images/"/>
+    <image id="6dusb" name="图层 5(1).png" path="/Images/"/>
+    <image id="6dusa" name="图层 6(1).png" path="/Images/"/>
+    <image id="6dus9" name="图层 7(1).png" path="/Images/"/>
+    <image id="6dus8" name="图层 8(1).png" path="/Images/"/>
+    <image id="6dus7" name="图层 9(1).png" path="/Images/"/>
+    <image id="6dusj" name="backdropUI.png" path="/Images/"/>
   </resources>
   <publish name="" genCode="true"/>
 </packageDescription>
